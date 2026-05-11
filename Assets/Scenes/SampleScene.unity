@@ -826,7 +826,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimerScript
   timelimit: 60
-  timerTextUI: {fileID: 0}
+  timerTextUI: {fileID: 1693542865}
 --- !u!4 &1199606293
 Transform:
   m_ObjectHideFlags: 0
@@ -1849,11 +1849,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TypingController
   targetTextUI: {fileID: 1828985495}
   typedTextUI: {fileID: 1449124862}
-  targetText: The quick brown fox jumps over the lazy dog.
-  Prompt_Tier: {fileID: 0}
-  timerScript: {fileID: 0}
-  uIManager: {fileID: 0}
-  accuracySystem: {fileID: 0}
+  targetText: 
+  Prompt_Tier: {fileID: 2119268844}
+  timerScript: {fileID: 1199606292}
+  uIManager: {fileID: 1194155917}
+  accuracySystem: {fileID: 1687724627}
 --- !u!4 &1863526277
 Transform:
   m_ObjectHideFlags: 0

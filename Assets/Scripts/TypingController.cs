@@ -33,7 +33,8 @@ public class TypingController : MonoBehaviour
     void Start()
     {
         Prompt_Tier = GameObject.Find("Prompt_Random").GetComponent<Prompt_Rarity>();
-        targetTextUI.text = Randomized_PromptRarity();
+        targetText = Randomized_PromptRarity();
+        targetTextUI.text = targetText;
         typedTextUI.text = "";
         timerScript.OnTimerEnd += HandleTimeUp;
     }
@@ -141,6 +142,15 @@ public class TypingController : MonoBehaviour
 #region Prompt Rarity
     public string Randomized_PromptRarity()
     {
+        
+        if (Prompt_Tier == null || Prompt_Tier.promptList == null 
+        || Prompt_Tier.promptList.PromptRarity == null || 
+        Prompt_Tier.promptList.PromptRarity.Length == 0)
+        {
+            Debug.LogError("Prompt_Tier reference is missing!");
+            return "Error: No Prompt Rarity";
+        }
+        
         //Random row from array is chosen
         var allRows = Prompt_Tier.promptList.PromptRarity;
         int randomIndex = Random.Range(0, allRows.Length);
@@ -151,26 +161,24 @@ public class TypingController : MonoBehaviour
         float rarityRoll = Random.value;
         string chosenRarity = rows.Common;
 
-        if (rarityRoll < 0.5f) //50%
+        if (rarityRoll < 0.90f) //90%
         {
             chosenRarity = rows.Common;
         }
-        else if (rarityRoll < 0.3f) //30%
+        else if (rarityRoll < 0.96f) //6%
         {
             chosenRarity = rows.Uncommon;
         }
-        else if (rarityRoll < 0.1f) //10%
+        else if (rarityRoll < 0.99f) //3
         {
             chosenRarity = rows.Rare;
         }
-        else if (rarityRoll < 0.5f) //5%
+        else if (rarityRoll < 0.999f) //0.9
         {
             chosenRarity = rows.Epic;
         }
-        else if (rarityRoll < 0.001f) //0.1%
-        {
+        else        //0.1%
             chosenRarity = rows.Legendary;
-        }
 
         return chosenRarity;
     }
