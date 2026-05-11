@@ -826,7 +826,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimerScript
   timelimit: 60
-  timerTextUI: {fileID: 1693542865}
+  timerTextUI: {fileID: 0}
 --- !u!4 &1199606293
 Transform:
   m_ObjectHideFlags: 0
@@ -1850,9 +1850,10 @@ MonoBehaviour:
   targetTextUI: {fileID: 1828985495}
   typedTextUI: {fileID: 1449124862}
   targetText: The quick brown fox jumps over the lazy dog.
-  timerScript: {fileID: 1199606292}
-  uIManager: {fileID: 1194155917}
-  accuracySystem: {fileID: 1687724627}
+  Prompt_Tier: {fileID: 0}
+  timerScript: {fileID: 0}
+  uIManager: {fileID: 0}
+  accuracySystem: {fileID: 0}
 --- !u!4 &1863526277
 Transform:
   m_ObjectHideFlags: 0
@@ -1863,6 +1864,53 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 881.0604, y: 647.1658, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2119268843
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2119268845}
+  - component: {fileID: 2119268844}
+  m_Layer: 0
+  m_Name: Prompt_Random
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2119268844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2119268843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50838a6e3b6fb6449b82b5ab374b08f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Prompt_Rarity
+  Prompts: {fileID: 4900000, guid: 21630852b103f254785a3211139077cc, type: 3}
+  promptList:
+    PromptRarity: []
+--- !u!4 &2119268845
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2119268843}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3.87274, y: -3.51809, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1881,3 +1929,4 @@ SceneRoots:
   - {fileID: 1194155916}
   - {fileID: 850164856}
   - {fileID: 1687724628}
+  - {fileID: 2119268845}
