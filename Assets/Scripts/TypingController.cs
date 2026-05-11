@@ -19,22 +19,30 @@ public class TypingController : MonoBehaviour
      [Header("Prompt Rarity")]
     public Prompt_Rarity Prompt_Tier;
 
-void Awake()
-    {
-       
-    }
+ [Header("Timer")]
+    public TimerScript timerScript;
+
+    private bool isGameActive = true;
+
+    [Header("UI")]
+    public UIManager uIManager;
+
+    [Header("Accuracy System")]
+    public AccuracySystem accuracySystem;
+
     void Start()
     {
         Prompt_Tier = GameObject.Find("Prompt_Random").GetComponent<Prompt_Rarity>();
         targetTextUI.text = Randomized_PromptRarity();
         typedTextUI.text = "";
+        timerScript.OnTimerEnd += HandleTimeUp;
     }
-
     void Update()
     {
+        if (!isGameActive) return;
         InputTyping();
     }
-
+    
     void InputTyping()
     {
         foreach (char c in Input.inputString)
@@ -65,6 +73,13 @@ void Awake()
                 if (typedText.Length < targetText.Length)
                 {
                     typedText += c;
+                    if (typedText.Length <= targetText.Length)
+{
+                    char expectedChar = targetText[typedText.Length - 1];
+                    accuracySystem.RegisterInput(c, expectedChar);
+}
+
+                    
                 }
             }
         }
@@ -92,10 +107,33 @@ void Awake()
         typedTextUI.text = result;
     }
 
+    void ShowFinalMistakes()
+    {
+        string result = "";
+
+        for (int i = 0; i < targetText.Length; i++)
+        {
+            if (i < typedText.Length && typedText[i] == targetText[i])
+            {
+                result += $"<color=white>{targetText[i]}</color>";
+            }
+            else
+            {
+                result += $"<color=red>{targetText[i]}</color>";
+            }
+        }
+
+    typedTextUI.text = result;
+    }
+
     void CheckFinished()
     {
         if (typedText == targetText)
         {
+            isGameActive = false;
+            timerScript.StopTimer();
+            accuracySystem.CalculateFinalAccuracy();
+            uIManager.OpenGameOverUI(true);
             Debug.Log("You win!");
         }
     }
@@ -140,4 +178,12 @@ void Awake()
 #endregion
 
    
+    void HandleTimeUp()
+    {
+        isGameActive = false;
+        ShowFinalMistakes();
+        //accuracySystem.CalculateFinalAccuracy();
+        uIManager.OpenGameOverUI(false);
+        Debug.Log("You Lose! Time ran out.");
+    }   
 }
