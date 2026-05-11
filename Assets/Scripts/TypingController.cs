@@ -161,19 +161,19 @@ public class TypingController : MonoBehaviour
         float rarityRoll = Random.value;
         string chosenRarity = rows.Common;
 
-        if (rarityRoll < 0.90f) //90%
+        if (rarityRoll < 0.50f) //50%
         {
             chosenRarity = rows.Common;
         }
-        else if (rarityRoll < 0.96f) //6%
+        else if (rarityRoll < 0.80f) //30%
         {
             chosenRarity = rows.Uncommon;
         }
-        else if (rarityRoll < 0.99f) //3
+        else if (rarityRoll < 0.90f) //10%
         {
             chosenRarity = rows.Rare;
         }
-        else if (rarityRoll < 0.999f) //0.9
+        else if (rarityRoll < 0.999f) //0.9%
         {
             chosenRarity = rows.Epic;
         }
