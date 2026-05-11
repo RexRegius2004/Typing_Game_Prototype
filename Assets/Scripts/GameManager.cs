@@ -1,6 +1,6 @@
 using UnityEngine;
-
-public class Timer : MonoBehaviour
+using UnityEngine.SceneManagement;
+public class GameManager : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -11,6 +11,11 @@ public class Timer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
+    }
+    
+    public void PlayAgain()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

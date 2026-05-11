@@ -11,21 +11,31 @@ public class TypingController : MonoBehaviour
     [Header("Typing Settings")]
     [TextArea(3, 5)]
     public string targetText = "The quick brown fox jumps over the lazy dog.";
-
     private string typedText = "";
     private int correctIndex = 0;
+
+    [Header("Timer")]
+    public TimerScript timerScript;
+    private bool isGameActive = true;
+
+    [Header("UI")]
+    public UIManager uIManager;
+
+    [Header("Accuracy System")]
+    public AccuracySystem accuracySystem;
 
     void Start()
     {
         targetTextUI.text = targetText;
         typedTextUI.text = "";
+        timerScript.OnTimerEnd += HandleTimeUp;
     }
-
     void Update()
     {
+        if (!isGameActive) return;
         InputTyping();
     }
-
+    
     void InputTyping()
     {
         foreach (char c in Input.inputString)
@@ -56,6 +66,13 @@ public class TypingController : MonoBehaviour
                 if (typedText.Length < targetText.Length)
                 {
                     typedText += c;
+                    if (typedText.Length <= targetText.Length)
+{
+                    char expectedChar = targetText[typedText.Length - 1];
+                    accuracySystem.RegisterInput(c, expectedChar);
+}
+
+                    
                 }
             }
         }
@@ -83,11 +100,43 @@ public class TypingController : MonoBehaviour
         typedTextUI.text = result;
     }
 
+    void ShowFinalMistakes()
+    {
+        string result = "";
+
+        for (int i = 0; i < targetText.Length; i++)
+        {
+            if (i < typedText.Length && typedText[i] == targetText[i])
+            {
+                result += $"<color=white>{targetText[i]}</color>";
+            }
+            else
+            {
+                result += $"<color=red>{targetText[i]}</color>";
+            }
+        }
+
+    typedTextUI.text = result;
+    }
+
     void CheckFinished()
     {
         if (typedText == targetText)
         {
+            isGameActive = false;
+            timerScript.StopTimer();
+            accuracySystem.CalculateFinalAccuracy();
+            uIManager.OpenGameOverUI(true);
             Debug.Log("You win!");
         }
     }
+
+    void HandleTimeUp()
+    {
+        isGameActive = false;
+        ShowFinalMistakes();
+        //accuracySystem.CalculateFinalAccuracy();
+        uIManager.OpenGameOverUI(false);
+        Debug.Log("You Lose! Time ran out.");
+    }   
 }
