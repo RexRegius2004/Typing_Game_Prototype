@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Text;
 
 public class UIManager : MonoBehaviour
 {
@@ -7,6 +8,13 @@ public class UIManager : MonoBehaviour
     public GameObject gameOverUI;
     public TextMeshProUGUI gameOverTextUI;
     public TextMeshProUGUI accuracyTextUI;
+    public TextMeshProUGUI upgradesTextUI;
+    public TextMeshProUGUI currencyTextUI;
+
+    public CurrencySystem currencySystem;
+    public UpgradeManager UpgradeManager;
+    public AccuracySystem accuracySystem;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -16,7 +24,8 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        UpdateUpgradeUI();
+        UpdateCurrencyUI();
     }
     
     public void OpenGameOverUI(bool Outcome)
@@ -27,4 +36,36 @@ public class UIManager : MonoBehaviour
             gameOverTextUI.text = "Game Over Time's Up";
         gameOverUI.SetActive(true);
     }
+
+    public void UpdateUpgradeUI()
+    {
+        foreach (var upgrade in UpgradeManager.upgrades)
+        {
+            upgradesTextUI.text = $"Upgrades: \n {upgrade.data.upgradeName} Lv.{upgrade.currentLevel}/{upgrade.data.maxLevel}\n";
+        }
+
+    }
+    public void AccuracyResultUI(float accuracy)
+    {
+
+        if (accuracy < accuracySystem.passThreshold)
+        {
+            accuracyTextUI.text = "No Rewards";
+            Debug.Log("Failed - No rewards");
+        }
+        else
+        {
+            accuracyTextUI.text = "Give Rewards";
+            Debug.Log("Passed - Give rewards");
+        }
+
+         accuracyTextUI.text = $"Accuracy: {accuracy:0}% \n {accuracyTextUI.text}";
+    }
+
+    public void UpdateCurrencyUI()
+    {
+        currencyTextUI.text = $"${currencySystem.Money.ToString()}";
+    }
+
+    
 }

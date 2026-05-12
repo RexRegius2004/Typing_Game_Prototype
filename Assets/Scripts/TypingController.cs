@@ -1,7 +1,6 @@
 
 using UnityEngine;
 using TMPro;
-using Mono.Cecil.Cil;
 
 
 public class TypingController : MonoBehaviour
