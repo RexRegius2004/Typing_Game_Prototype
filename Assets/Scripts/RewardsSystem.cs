@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class RewardsSystem : MonoBehaviour
 {
-      [Header("References")]
+    [Header("References")]
     public TypingController typingController;
     public AccuracySystem accuracySystem;
     public TimerScript timerScript;
@@ -12,75 +12,119 @@ public class RewardsSystem : MonoBehaviour
     [Header("Reward Settings")]
 
     [Tooltip("Flat reward added every game")]
-    public int baseReward = 50;
+    public int baseReward = 1;
 
-    [Tooltip("Reward per correctly typed word")]
-    public float wordValue = 5f;
-
-    [Tooltip("Reward per second remaining")]
-    public float speedValue = 3f;
+    [Tooltip("Speed bonus per remaining second")]
+    public float speedValue = 0.05f;
 
     [Header("Difficulty Multipliers")]
     public float commonMultiplier = 1f;
-    public float uncommonMultiplier = 1.2f;
-    public float rareMultiplier = 1.5f;
-    public float epicMultiplier = 2f;
-    public float legendaryMultiplier = 3f;
+    public float uncommonMultiplier = 1.05f;
+    public float rareMultiplier = 1.1f;
+    public float epicMultiplier = 1.25f;
+    public float legendaryMultiplier = 1.5f;
 
     [Header("Results")]
     public int finalMoney;
     public int wordsTyped;
-    public int correctCharacters;
+    public int correctWords;
     public float accuracy;
     public float remainingTime;
     public float difficultyMultiplier;
 
     public void CalculateRewards()
     {
+        // =====================================
         // GET VALUES
+        // =====================================
+
         accuracy = accuracySystem.finalAccuracy;
         remainingTime = timerScript.GetRemainingTime();
 
-        // Count words from target text
+        // Total words in prompt
         wordsTyped = CountWords(typingController.targetText);
 
-        // Count correctly typed characters
-        correctCharacters = Mathf.RoundToInt(
-            typingController.targetText.Length * (accuracy / 100f)
+        // Accuracy-adjusted correct words
+        correctWords = Mathf.RoundToInt(
+            wordsTyped * (accuracy / 100f)
         );
 
+        // =====================================
         // DIFFICULTY MULTIPLIER
+        // =====================================
+
         difficultyMultiplier = GetDifficultyMultiplier(
             typingController.currentPromptRarity
         );
 
-        // SCORE COMPONENTS
+        // =====================================
+        // WORD REWARD (SQRT SCALING)
+        // Prevents long prompts from exploding economy
+        // =====================================
+
         float wordReward =
-            wordsTyped * wordValue;
+            Mathf.Sqrt(correctWords);
+
+        // =====================================
+        // SPEED BONUS
+        // =====================================
 
         float speedBonus =
             remainingTime * speedValue;
+
+        // =====================================
+        // SUBTOTAL
+        // =====================================
 
         float subtotal =
             baseReward +
             wordReward +
             speedBonus;
 
-    
-        // ACCURACY MULTIPLIER
-        subtotal *= (accuracy / 100f);
+        // =====================================
+        // SOFT ACCURACY MULTIPLIER
+        // Less punishing than pure accuracy/100
+        // =====================================
 
-        // FINAL MULTIPLIER
+        float accuracyMultiplier =
+            0.5f + (accuracy / 200f);
+
+        subtotal *= accuracyMultiplier;
+
+        // =====================================
+        // DIFFICULTY MULTIPLIER
+        // =====================================
+
         subtotal *= difficultyMultiplier;
 
+        // =====================================
         // FINAL REWARD
-        finalMoney = Mathf.RoundToInt(subtotal);
+        // =====================================
 
-        // MINIMUM REWARD
-        finalMoney = Mathf.Max(finalMoney, 10);
+        finalMoney = Mathf.FloorToInt(subtotal);
 
-        
+        // Minimum reward floor
+        finalMoney = Mathf.Max(finalMoney, 1);
+
+        // =====================================
+        // GIVE MONEY
+        // =====================================
+
         currencySystem.AddMoney(finalMoney);
+
+        // =====================================
+        // DEBUG
+        // =====================================
+
+        Debug.Log("===== REWARD BREAKDOWN =====");
+        Debug.Log("Words Typed: " + wordsTyped);
+        Debug.Log("Correct Words: " + correctWords);
+        Debug.Log("Accuracy: " + accuracy);
+        Debug.Log("Remaining Time: " + remainingTime);
+        Debug.Log("Word Reward: " + wordReward);
+        Debug.Log("Speed Bonus: " + speedBonus);
+        Debug.Log("Difficulty Multiplier: " + difficultyMultiplier);
+        Debug.Log("Final Reward: " + finalMoney);
     }
 
     int CountWords(string text)
