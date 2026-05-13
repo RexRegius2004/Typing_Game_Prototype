@@ -55,7 +55,7 @@ public class UIManager : MonoBehaviour
 
     public void BreakdownResultsUI()
     {
-        breakdownTextUI.text = $"REWARD BREAKDOWN \n Words Typed: {rewardsSystem.wordsTyped} \n Accuracy: {rewardsSystem.accuracy}% \n Remaining Time: {rewardsSystem.remainingTime} \n Difficulty Multiplier: {rewardsSystem.difficultyMultiplier} \n Reward: {rewardsSystem.finalMoney} ";
+        breakdownTextUI.text = $"REWARD BREAKDOWN \n Words Typed: {rewardsSystem.wordsTyped} \n Accuracy: {rewardsSystem.accuracy}% \n Remaining Time: {rewardsSystem.remainingTime} \n Difficulty Multiplier: {rewardsSystem.difficultyMultiplier} \n Reward: {rewardsSystem.finalMoney} \n CritMoney: {rewardsSystem.criticalMoney}";
     }
 
     public void UpdateCurrencyUI()
