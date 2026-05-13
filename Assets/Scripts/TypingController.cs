@@ -17,7 +17,9 @@ public class TypingController : MonoBehaviour
 
      [Header("Prompt Rarity")]
     public Prompt_Rarity Prompt_Tier;
-
+    public string RarityTier { get; private set; } = "Common"; 
+    
+    
  [Header("Timer")]
     public TimerScript timerScript;
 
@@ -36,6 +38,7 @@ public class TypingController : MonoBehaviour
         targetTextUI.text = targetText;
         typedTextUI.text = "";
         timerScript.OnTimerEnd += HandleTimeUp;
+        
     }
     void Update()
     {
@@ -154,6 +157,7 @@ public class TypingController : MonoBehaviour
         var allRows = Prompt_Tier.promptList.PromptRarity;
         int randomIndex = Random.Range(0, allRows.Length);
         var rows = allRows[randomIndex];
+        
 
 
         //Roll Rarity
@@ -163,23 +167,34 @@ public class TypingController : MonoBehaviour
         if (rarityRoll < 0.50f) //50%
         {
             chosenRarity = rows.Common;
+            RarityTier = "Common";
         }
         else if (rarityRoll < 0.80f) //30%
         {
             chosenRarity = rows.Uncommon;
+            RarityTier = "Uncommon";
         }
-        else if (rarityRoll < 0.90f) //10%
+        else if (rarityRoll < 0.99f) //19%
         {
             chosenRarity = rows.Rare;
+            RarityTier = "Rare";
         }
-        else if (rarityRoll < 0.999f) //0.9%
+        else if (rarityRoll < 1f) //1%
         {
             chosenRarity = rows.Epic;
+            RarityTier = "Epic";
         }
-        else        //0.1%
+        else 
+        {
             chosenRarity = rows.Legendary;
+            RarityTier = "Legendary";
+        }
+
 
         return chosenRarity;
+
+       
+            
     }
     
 #endregion

@@ -10,10 +10,12 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI accuracyTextUI;
     public TextMeshProUGUI upgradesTextUI;
     public TextMeshProUGUI currencyTextUI;
+    public TextMeshProUGUI P_RarityTextUI;
 
     public CurrencySystem currencySystem;
     public UpgradeManager UpgradeManager;
     public AccuracySystem accuracySystem;
+    public TypingController P_rarity;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -26,6 +28,7 @@ public class UIManager : MonoBehaviour
     {
         UpdateUpgradeUI();
         UpdateCurrencyUI();
+        UpdateRarityUI();
     }
     
     public void OpenGameOverUI(bool Outcome)
@@ -66,6 +69,15 @@ public class UIManager : MonoBehaviour
     {
         currencyTextUI.text = $"${currencySystem.Money.ToString()}";
     }
+
+    public void UpdateRarityUI()
+    {
+        if (P_RarityTextUI != null)
+        {
+            P_RarityTextUI.text = $"Rarity: {P_rarity.RarityTier}";
+        }
+    }
+
 
     
 }
