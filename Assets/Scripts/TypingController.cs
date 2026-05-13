@@ -176,26 +176,31 @@ public class TypingController : MonoBehaviour
         {
             chosenRarity = rows.Common;
             currentPromptRarity = "Common";
+            Debug.Log(rarityRoll);
         }
         else if (rarityRoll < 0.80f)
         {
             chosenRarity = rows.Uncommon;
             currentPromptRarity = "Uncommon";
+            Debug.Log(rarityRoll);
         }
         else if (rarityRoll < 0.99f) //19%
         {
             chosenRarity = rows.Rare;
             currentPromptRarity = "Rare";
+            Debug.Log(rarityRoll);
         }
         else if (rarityRoll < 1f) //1%
         {
             chosenRarity = rows.Epic;
             currentPromptRarity = "Epic";
+            Debug.Log(rarityRoll);
         }
         else 
         {
             chosenRarity = rows.Legendary;
             currentPromptRarity = "Legendary";
+            Debug.Log(rarityRoll);
         }
 
 
