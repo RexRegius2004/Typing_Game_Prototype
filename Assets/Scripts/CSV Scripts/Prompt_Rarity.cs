@@ -60,81 +60,132 @@ public class Prompt_Rarity : MonoBehaviour
         }
 
         string csvText = Prompts.text;
-        var lines = SplitLines(csvText);
-         if (lines.Count <= 1)
-    {
-        Debug.LogWarning("Prompt_Rarity: CSV has no data rows.");
-        promptList.PromptRarity = new PromptRarity[0];
-        return;
-    }
-    // Skip header row (line 0). Everything after that is data.
-    int tableSize = lines.Count - 1;
-    promptList.PromptRarity = new PromptRarity[tableSize];
-    for (int i = 0; i < tableSize; i++)
-    {
-        string line = lines[i + 1];
-        var fields = ParseCsvLine(line);
-        if (fields.Count < 5)
+        // Must split on "logical" CSV rows, not raw newlines — quoted fields can contain \n
+        // (e.g. multi-paragraph Common column). SplitLines() breaks those and yields empty/wrong cells.
+        var logicalRows = SplitCsvIntoLogicalRows(csvText);
+        if (logicalRows.Count <= 1)
         {
-            Debug.LogWarning($"Prompt_Rarity: Row {i + 2} has fewer than 5 columns. Skipping.");
-            continue;
+            Debug.LogWarning("Prompt_Rarity: CSV has no data rows.");
+            promptList.PromptRarity = new PromptRarity[0];
+            return;
         }
-        var row = new PromptRarity();
-        row.Common = fields[0].Trim();
-        row.Uncommon = fields[1].Trim();
-        row.Rare = fields[2].Trim();
-        row.Epic = fields[3].Trim();
-        row.Legendary = fields[4].Trim();
-        promptList.PromptRarity[i] = row;
-    }
-}
-private System.Collections.Generic.List<string> SplitLines(string text)
-{
-    var lines = new System.Collections.Generic.List<string>();
-    var raw = text.Split(new[] { "\r\n", "\n", "\r" }, System.StringSplitOptions.None);
-    foreach (var line in raw)
-    {
-        // Keep only non-empty lines (helps avoid trailing blank row issues)
-        if (!string.IsNullOrWhiteSpace(line))
-            lines.Add(line);
-    }
-    return lines;
-}
-private System.Collections.Generic.List<string> ParseCsvLine(string line)
-{
-    var fields = new System.Collections.Generic.List<string>();
-    var current = new System.Text.StringBuilder();
-    bool inQuotes = false;
-    for (int i = 0; i < line.Length; i++)
-    {
-        char c = line[i];
-        if (c == '\"')
+
+        var loaded = new System.Collections.Generic.List<PromptRarity>();
+        for (int i = 1; i < logicalRows.Count; i++)
         {
-            // Escaped quote inside quoted field: ""
-            if (inQuotes && i + 1 < line.Length && line[i + 1] == '\"')
+            string line = logicalRows[i];
+            if (string.IsNullOrWhiteSpace(line))
+                continue;
+
+            var fields = ParseCsvLine(line);
+            if (fields.Count < 5)
             {
-                current.Append('\"');
-                i++; // skip the second quote
+                Debug.LogWarning($"Prompt_Rarity: Row {i + 1} has {fields.Count} columns (need 5). Skipping.");
+                continue;
+            }
+
+            var row = new PromptRarity();
+            row.Common = fields[0].Trim();
+            row.Uncommon = fields[1].Trim();
+            row.Rare = fields[2].Trim();
+            row.Epic = fields[3].Trim();
+            row.Legendary = fields[4].Trim();
+            loaded.Add(row);
+        }
+
+        promptList.PromptRarity = loaded.ToArray();
+    }
+
+    /// <summary>
+    /// Splits CSV text into logical rows. Newlines inside double-quoted fields do not end a row.
+    /// </summary>
+    private System.Collections.Generic.List<string> SplitCsvIntoLogicalRows(string text)
+    {
+        var rows = new System.Collections.Generic.List<string>();
+        if (string.IsNullOrEmpty(text))
+            return rows;
+
+        if (text[0] == '\uFEFF')
+            text = text.Substring(1);
+        if (string.IsNullOrEmpty(text))
+            return rows;
+
+        var row = new System.Text.StringBuilder();
+        bool inQuotes = false;
+
+        for (int i = 0; i < text.Length; i++)
+        {
+            char c = text[i];
+
+            if (c == '\"')
+            {
+                if (inQuotes && i + 1 < text.Length && text[i + 1] == '\"')
+                {
+                    row.Append("\"\"");
+                    i++;
+                }
+                else
+                {
+                    inQuotes = !inQuotes;
+                    row.Append(c);
+                }
+                continue;
+            }
+
+            if (!inQuotes && (c == '\n' || c == '\r'))
+            {
+                if (c == '\r' && i + 1 < text.Length && text[i + 1] == '\n')
+                    i++;
+                rows.Add(row.ToString());
+                row.Length = 0;
+                continue;
+            }
+
+            row.Append(c);
+        }
+
+        rows.Add(row.ToString());
+
+        while (rows.Count > 0 && string.IsNullOrWhiteSpace(rows[rows.Count - 1]))
+            rows.RemoveAt(rows.Count - 1);
+
+        return rows;
+    }
+
+    private System.Collections.Generic.List<string> ParseCsvLine(string line)
+    {
+        var fields = new System.Collections.Generic.List<string>();
+        var current = new System.Text.StringBuilder();
+        bool inQuotes = false;
+        for (int i = 0; i < line.Length; i++)
+        {
+            char c = line[i];
+            if (c == '\"')
+            {
+                // Escaped quote inside quoted field: ""
+                if (inQuotes && i + 1 < line.Length && line[i + 1] == '\"')
+                {
+                    current.Append('\"');
+                    i++; // skip the second quote
+                }
+                else
+                {
+                    inQuotes = !inQuotes;
+                }
+            }
+            else if (c == ',' && !inQuotes)
+            {
+                fields.Add(current.ToString());
+                current.Length = 0;
             }
             else
             {
-                inQuotes = !inQuotes;
+                current.Append(c);
             }
         }
-        else if (c == ',' && !inQuotes)
-        {
-            fields.Add(current.ToString());
-            current.Length = 0;
-        }
-        else
-        {
-            current.Append(c);
-        }
+        fields.Add(current.ToString());
+        return fields;
     }
-    // last field
-    fields.Add(current.ToString());
-    return fields;
-}
     
 
     // void Start()

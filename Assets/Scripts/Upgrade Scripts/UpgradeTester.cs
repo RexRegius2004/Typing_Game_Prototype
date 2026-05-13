@@ -5,6 +5,7 @@ public class DebugTester : MonoBehaviour
 {
     public UpgradeManager UpgradeManager;
     public CurrencySystem currencySystem;
+    public TypingController RarityRoll;
     private UpgradeData testUpgrade;
     void Update()
     {
