@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
+    public UpgradeManager UpgradeManager;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -16,6 +17,8 @@ public class GameManager : MonoBehaviour
     
     public void PlayAgain()
     {
+        UpgradeManager.ResetUpgrades();
+        
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
