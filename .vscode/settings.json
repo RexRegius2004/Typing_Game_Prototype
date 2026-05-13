@@ -71,6 +71,8 @@
     "dotnet.enableWorkspaceBasedDevelopment": false,
     "cSpell.words": [
         "Behaviour",
+        "Mathf",
+        "Prefs",
         "UGUI"
     ]
 }

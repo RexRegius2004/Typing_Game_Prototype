@@ -1127,9 +1127,11 @@ MonoBehaviour:
   accuracyTextUI: {fileID: 1646738547}
   upgradesTextUI: {fileID: 891715602}
   currencyTextUI: {fileID: 420411739}
+  P_RarityTextUI: {fileID: 1340452681}
   currencySystem: {fileID: 1248951591}
   UpgradeManager: {fileID: 1394523836}
   accuracySystem: {fileID: 1687724627}
+  P_rarity: {fileID: 1863526276}
 --- !u!1 &1199606291
 GameObject:
   m_ObjectHideFlags: 0
@@ -1481,7 +1483,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: -184.63303, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -2425,7 +2427,6 @@ MonoBehaviour:
   typedTextUI: {fileID: 1449124862}
   targetText: 
   Prompt_Tier: {fileID: 2119268844}
-  P_RarityTextUI: {fileID: 1340452681}
   timerScript: {fileID: 1199606292}
   uIManager: {fileID: 1194155917}
   accuracySystem: {fileID: 1687724627}
