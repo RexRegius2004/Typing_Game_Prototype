@@ -7,7 +7,6 @@ public class UIManager : MonoBehaviour
     [Header("UI Settings")]
     public GameObject gameOverUI;
     public TextMeshProUGUI gameOverTextUI;
-    public TextMeshProUGUI accuracyTextUI;
     public TextMeshProUGUI upgradesTextUI;
     public TextMeshProUGUI currencyTextUI;
     public TextMeshProUGUI P_RarityTextUI;
@@ -16,6 +15,9 @@ public class UIManager : MonoBehaviour
     public UpgradeManager UpgradeManager;
     public AccuracySystem accuracySystem;
     public TypingController P_rarity;
+    public TextMeshProUGUI breakdownTextUI;
+    public RewardsSystem rewardsSystem;
+  
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -37,6 +39,8 @@ public class UIManager : MonoBehaviour
             gameOverTextUI.text = "You Win Nice Job!";
         else
             gameOverTextUI.text = "Game Over Time's Up";
+        
+        BreakdownResultsUI();
         gameOverUI.SetActive(true);
     }
 
@@ -48,21 +52,10 @@ public class UIManager : MonoBehaviour
         }
 
     }
-    public void AccuracyResultUI(float accuracy)
+
+    public void BreakdownResultsUI()
     {
-
-        if (accuracy < accuracySystem.passThreshold)
-        {
-            accuracyTextUI.text = "No Rewards";
-            Debug.Log("Failed - No rewards");
-        }
-        else
-        {
-            accuracyTextUI.text = "Give Rewards";
-            Debug.Log("Passed - Give rewards");
-        }
-
-         accuracyTextUI.text = $"Accuracy: {accuracy:0}% \n {accuracyTextUI.text}";
+        breakdownTextUI.text = $"REWARD BREAKDOWN \n Words Typed: {rewardsSystem.wordsTyped} \n Accuracy: {rewardsSystem.accuracy}% \n Remaining Time: {rewardsSystem.remainingTime} \n Difficulty Multiplier: {rewardsSystem.difficultyMultiplier} \n Reward: {rewardsSystem.finalMoney} ";
     }
 
     public void UpdateCurrencyUI()
@@ -74,7 +67,7 @@ public class UIManager : MonoBehaviour
     {
         if (P_RarityTextUI != null)
         {
-            P_RarityTextUI.text = $"Rarity: {P_rarity.RarityTier}";
+            P_RarityTextUI.text = $"Rarity: {P_rarity.currentPromptRarity}";
         }
     }
 

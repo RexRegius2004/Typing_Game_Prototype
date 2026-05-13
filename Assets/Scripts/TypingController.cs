@@ -17,10 +17,11 @@ public class TypingController : MonoBehaviour
 
      [Header("Prompt Rarity")]
     public Prompt_Rarity Prompt_Tier;
-    public string RarityTier { get; private set; } = "Common"; 
     
     
  [Header("Timer")]
+
+    [Header("Timer")]
     public TimerScript timerScript;
 
     private bool isGameActive = true;
@@ -30,6 +31,12 @@ public class TypingController : MonoBehaviour
 
     [Header("Accuracy System")]
     public AccuracySystem accuracySystem;
+
+    [Header("Reward System")]
+    public RewardsSystem rewardsSystem;
+
+    [HideInInspector]
+    public string currentPromptRarity {get; private set;} = "Common";
 
     void Start()
     {
@@ -136,6 +143,7 @@ public class TypingController : MonoBehaviour
             isGameActive = false;
             timerScript.StopTimer();
             accuracySystem.CalculateFinalAccuracy();
+            rewardsSystem.CalculateRewards();
             uIManager.OpenGameOverUI(true);
             Debug.Log("You win!");
         }
@@ -164,30 +172,30 @@ public class TypingController : MonoBehaviour
         float rarityRoll = Random.value;
         string chosenRarity = rows.Common;
 
-        if (rarityRoll < 0.50f) //50%
+        if (rarityRoll < 0.50f)
         {
             chosenRarity = rows.Common;
-            RarityTier = "Common";
+            currentPromptRarity = "Common";
         }
-        else if (rarityRoll < 0.80f) //30%
+        else if (rarityRoll < 0.80f)
         {
             chosenRarity = rows.Uncommon;
-            RarityTier = "Uncommon";
+            currentPromptRarity = "Uncommon";
         }
         else if (rarityRoll < 0.99f) //19%
         {
             chosenRarity = rows.Rare;
-            RarityTier = "Rare";
+            currentPromptRarity = "Rare";
         }
         else if (rarityRoll < 1f) //1%
         {
             chosenRarity = rows.Epic;
-            RarityTier = "Epic";
+            currentPromptRarity = "Epic";
         }
         else 
         {
             chosenRarity = rows.Legendary;
-            RarityTier = "Legendary";
+            currentPromptRarity = "Legendary";
         }
 
 

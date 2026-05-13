@@ -3,43 +3,116 @@ using UnityEngine;
 
 public class RewardsSystem : MonoBehaviour
 {
-    /*[Header("Currency")]
+      [Header("References")]
+    public TypingController typingController;
+    public AccuracySystem accuracySystem;
+    public TimerScript timerScript;
     public CurrencySystem currencySystem;
 
-    [Header("Upgrades")]
-    public UpgradeManager upgradeManager;
+    [Header("Reward Settings")]
 
-    [Header("Rewards Results")]
-    public int earnedMoney;
-    public void GiveRewards(float accuracy)
+    [Tooltip("Flat reward added every game")]
+    public int baseReward = 50;
+
+    [Tooltip("Reward per correctly typed word")]
+    public float wordValue = 5f;
+
+    [Tooltip("Reward per second remaining")]
+    public float speedValue = 3f;
+
+    [Header("Difficulty Multipliers")]
+    public float commonMultiplier = 1f;
+    public float uncommonMultiplier = 1.2f;
+    public float rareMultiplier = 1.5f;
+    public float epicMultiplier = 2f;
+    public float legendaryMultiplier = 3f;
+
+    [Header("Results")]
+    public int finalMoney;
+    public int wordsTyped;
+    public int correctCharacters;
+    public float accuracy;
+    public float remainingTime;
+    public float difficultyMultiplier;
+
+    public void CalculateRewards()
     {
-        earnedMoney =  Mathf.RoundToInt(accuracy * upgradeManager.currentWageMultiplier);
+        // GET VALUES
+        accuracy = accuracySystem.finalAccuracy;
+        remainingTime = timerScript.GetRemainingTime();
 
-        if (accuracy >= 100f)
+        // Count words from target text
+        wordsTyped = CountWords(typingController.targetText);
+
+        // Count correctly typed characters
+        correctCharacters = Mathf.RoundToInt(
+            typingController.targetText.Length * (accuracy / 100f)
+        );
+
+        // DIFFICULTY MULTIPLIER
+        difficultyMultiplier = GetDifficultyMultiplier(
+            typingController.currentPromptRarity
+        );
+
+        // SCORE COMPONENTS
+        float wordReward =
+            wordsTyped * wordValue;
+
+        float speedBonus =
+            remainingTime * speedValue;
+
+        float subtotal =
+            baseReward +
+            wordReward +
+            speedBonus;
+
+    
+        // ACCURACY MULTIPLIER
+        subtotal *= (accuracy / 100f);
+
+        // FINAL MULTIPLIER
+        subtotal *= difficultyMultiplier;
+
+        // FINAL REWARD
+        finalMoney = Mathf.RoundToInt(subtotal);
+
+        // MINIMUM REWARD
+        finalMoney = Mathf.Max(finalMoney, 10);
+
+        currencySystem.AddMoney(finalMoney);
+    }
+
+    int CountWords(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return 0;
+
+        string[] words = text.Split(' ');
+
+        return words.Length;
+    }
+
+    float GetDifficultyMultiplier(string rarity)
+    {
+        switch (rarity)
         {
-            earnedMoney += upgradeManager.PerfectAccuracyBonus;
+            case "Common":
+                return commonMultiplier;
 
-            Debug.Log("PERFECT ACCURACY BONUS!");
-        }
-        else if (accuracy >= 90f)
-        {
-            earnedMoney += upgradeManager.HighAccuracyBonus;
+            case "Uncommon":
+                return uncommonMultiplier;
 
-            Debug.Log("HIGH ACCURACY BONUS!");
-        }
-        
-        foreach (var upgrade in upgradeManager.upgrades)
-        {
-            switch (upgrade.data.name)
-            {
-                case "Wage":
-                earnedMoney *= upgradeManager.currentWageMultiplier/100;
-                break;
-            }
-            //upgradesTextUI.text = $"Upgrades: \n {upgrade.data.upgradeName} Lv.{upgrade.currentLevel}/{upgrade.data.maxLevel}\n";
-        }
+            case "Rare":
+                return rareMultiplier;
 
-        currencySystem.AddMoney(earnedMoney);
-        earnedMoney = 0;
-    } */
+            case "Epic":
+                return epicMultiplier;
+
+            case "Legendary":
+                return legendaryMultiplier;
+
+            default:
+                return 1f;
+        }
+    }
 }

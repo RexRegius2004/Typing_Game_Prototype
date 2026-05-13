@@ -4,9 +4,9 @@ using System.Collections.Generic;
 public class UpgradeManager : MonoBehaviour
 {
     [Header("Base Stats")]
-    public float baseCritChance;
-    public float baseCritHit;
-    public float baseWageMultiplier;
+    public float baseCritChance = 0;
+    public float baseCritHit = 0;
+    public float baseWageMultiplier = 1;
 
     [Header("Percentage")]
     public float currentCritChance;
