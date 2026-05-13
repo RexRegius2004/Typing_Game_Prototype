@@ -14,7 +14,7 @@ public class AccuracySystem : MonoBehaviour
     [Header("Results")]
     public float finalAccuracy;
 
-    public UIManager uIManager;
+    //public UIManager uIManager;
 
     public void RegisterInput(char typedChar, char correctChar)
     {
@@ -37,7 +37,7 @@ public class AccuracySystem : MonoBehaviour
         if (totalCharacters == 0)
         {
             finalAccuracy = 0;
-            uIManager.AccuracyResultUI(finalAccuracy);
+            //uIManager.AccuracyResultUI(finalAccuracy);
             return;
         }
 
@@ -50,7 +50,7 @@ public class AccuracySystem : MonoBehaviour
         // Clamp 0-100
         finalAccuracy = Mathf.Clamp(finalAccuracy, 0f, 100f);
 
-        uIManager.AccuracyResultUI(finalAccuracy);
+        //uIManager.AccuracyResultUI(finalAccuracy);
 
         Debug.Log("Final Accuracy: " + finalAccuracy + "%");
     }

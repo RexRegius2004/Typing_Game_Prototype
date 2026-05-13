@@ -18,7 +18,7 @@ public class TypingController : MonoBehaviour
      [Header("Prompt Rarity")]
     public Prompt_Rarity Prompt_Tier;
 
- [Header("Timer")]
+    [Header("Timer")]
     public TimerScript timerScript;
 
     private bool isGameActive = true;
@@ -28,6 +28,12 @@ public class TypingController : MonoBehaviour
 
     [Header("Accuracy System")]
     public AccuracySystem accuracySystem;
+
+    [Header("Reward System")]
+    public RewardsSystem rewardsSystem;
+
+    [HideInInspector]
+    public string currentPromptRarity;
 
     void Start()
     {
@@ -133,6 +139,7 @@ public class TypingController : MonoBehaviour
             isGameActive = false;
             timerScript.StopTimer();
             accuracySystem.CalculateFinalAccuracy();
+            rewardsSystem.CalculateRewards();
             uIManager.OpenGameOverUI(true);
             Debug.Log("You win!");
         }
@@ -160,24 +167,31 @@ public class TypingController : MonoBehaviour
         float rarityRoll = Random.value;
         string chosenRarity = rows.Common;
 
-        if (rarityRoll < 0.50f) //50%
+        if (rarityRoll < 0.50f)
         {
             chosenRarity = rows.Common;
+            currentPromptRarity = "Common";
         }
-        else if (rarityRoll < 0.80f) //30%
+        else if (rarityRoll < 0.80f)
         {
             chosenRarity = rows.Uncommon;
+            currentPromptRarity = "Uncommon";
         }
-        else if (rarityRoll < 0.90f) //10%
+        else if (rarityRoll < 0.90f)
         {
             chosenRarity = rows.Rare;
+            currentPromptRarity = "Rare";
         }
-        else if (rarityRoll < 0.999f) //0.9%
+        else if (rarityRoll < 0.999f)
         {
             chosenRarity = rows.Epic;
+            currentPromptRarity = "Epic";
         }
-        else        //0.1%
+        else
+        {
             chosenRarity = rows.Legendary;
+            currentPromptRarity = "Legendary";
+        }
 
         return chosenRarity;
     }
