@@ -35,6 +35,13 @@ public class RewardsSystem : MonoBehaviour
     public float remainingTime;
     public float difficultyMultiplier;
 
+    [Header("Critical Hits")]
+    public int criticalMoney;
+
+    public void AddCriticalReward(int amount)
+    {
+        criticalMoney += amount;
+    }
     public void CalculateRewards()
     {
         // GET VALUES
@@ -74,7 +81,8 @@ public class RewardsSystem : MonoBehaviour
         subtotal *= difficultyMultiplier;
 
         // FINAL REWARD
-        finalMoney = Mathf.RoundToInt(subtotal);
+        finalMoney =
+        Mathf.FloorToInt(subtotal) + criticalMoney;
 
         // MINIMUM REWARD
         finalMoney = Mathf.Max(finalMoney, 10);

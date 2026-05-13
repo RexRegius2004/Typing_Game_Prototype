@@ -33,18 +33,17 @@ public class TypingController : MonoBehaviour
 
     [Header("Timer")]
     public TimerScript timerScript;
-
     private bool isGameActive = true;
 
-    [Header("UI")]
     public UIManager uIManager;
-
-    [Header("Accuracy System")]
     public AccuracySystem accuracySystem;
-
-    [Header("Reward System")]
     public RewardsSystem rewardsSystem;
+    public UpgradeManager upgradeManager;
 
+    [Header("Critical Hit")]
+    [Range(0f, 1f)]
+    private bool[] criticalLetters;
+    
     [HideInInspector]
     public string currentPromptRarity { get; private set; } = "Common";
 
@@ -112,6 +111,7 @@ public class TypingController : MonoBehaviour
                         currentTargetChunk[typedText.Length - 1];
 
                     accuracySystem.RegisterInput(c, expectedChar);
+                    CheckCriticalHit(c, expectedChar);
                 }
             }
         }
@@ -120,9 +120,36 @@ public class TypingController : MonoBehaviour
         CheckFinished();
     }
 
-    void UpdateTypedTextUI()
+        void UpdateTypedTextUI()
     {
-        string result = "";
+        // =====================================
+        // TARGET TEXT DISPLAY
+        // =====================================
+
+        string targetResult = "";
+
+        for (int i = 0; i < currentTargetChunk.Length; i++)
+        {
+            char letter = currentTargetChunk[i];
+
+            if (criticalLetters[i])
+            {
+                targetResult +=
+                    $"<color=#FFD700>{letter}</color>";
+            }
+            else
+            {
+                targetResult += letter;
+            }
+        }
+
+        targetTextUI.text = targetResult;
+
+        // =====================================
+        // TYPED TEXT DISPLAY
+        // =====================================
+
+        string typedResult = "";
 
         for (int i = 0; i < typedText.Length; i++)
         {
@@ -131,23 +158,26 @@ public class TypingController : MonoBehaviour
                 typedText[i] == currentTargetChunk[i]
             )
             {
-                result +=
+                typedResult +=
                     $"<color=white>{typedText[i]}</color>";
             }
             else
             {
-                result +=
+                typedResult +=
                     $"<color=red>{typedText[i]}</color>";
             }
         }
 
+        // =====================================
         // BLINKING CARET
+        // =====================================
+
         if (showCaret && caretVisible)
         {
-            result += "<color=white>|</color>";
+            typedResult += "<color=white>|</color>";
         }
 
-        typedTextUI.text = result;
+        typedTextUI.text = typedResult;
     }
 
     void LoadNextChunk()
@@ -181,9 +211,46 @@ public class TypingController : MonoBehaviour
             }
         }
 
-        targetTextUI.text = currentTargetChunk;
+        
 
+        GenerateCriticalLetters();
         UpdateTypedTextUI();
+    }
+
+    void GenerateCriticalLetters()
+    {
+        criticalLetters =
+            new bool[currentTargetChunk.Length];
+
+    for (int i = 0; i < currentTargetChunk.Length; i++)
+        {
+            if (currentTargetChunk[i] == ' ')
+                continue;
+
+            criticalLetters[i] =
+                Random.value <= upgradeManager.currentCritChance;
+        }
+    }
+
+    void CheckCriticalHit(char typedChar, char expectedChar)
+    {
+        int index = typedText.Length - 1;
+
+        if (index < 0 || index >= criticalLetters.Length)
+            return;
+
+        // Must be critical letter
+        if (!criticalLetters[index])
+            return;
+
+        // Must be typed correctly
+        if (typedChar != expectedChar)
+            return;
+
+        // GIVE BONUS
+        rewardsSystem.AddCriticalReward(Mathf.RoundToInt(rewardsSystem.wordValue * upgradeManager.currentCritHit));
+
+        Debug.Log("CRITICAL HIT!");
     }
 
     void CheckFinished()
