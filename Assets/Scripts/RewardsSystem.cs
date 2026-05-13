@@ -79,6 +79,7 @@ public class RewardsSystem : MonoBehaviour
         // MINIMUM REWARD
         finalMoney = Mathf.Max(finalMoney, 10);
 
+        
         currencySystem.AddMoney(finalMoney);
     }
 
