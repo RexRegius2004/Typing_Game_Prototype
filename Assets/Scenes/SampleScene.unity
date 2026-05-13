@@ -181,6 +181,7 @@ MonoBehaviour:
   accuracy: 0
   remainingTime: 0
   difficultyMultiplier: 0
+  criticalMoney: 0
 --- !u!1 &167374973
 GameObject:
   m_ObjectHideFlags: 0
@@ -2498,6 +2499,7 @@ MonoBehaviour:
   uIManager: {fileID: 1194155917}
   accuracySystem: {fileID: 1687724627}
   rewardsSystem: {fileID: 135844986}
+  upgradeManager: {fileID: 1394523836}
 --- !u!4 &1863526277
 Transform:
   m_ObjectHideFlags: 0

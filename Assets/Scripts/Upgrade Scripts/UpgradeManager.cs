@@ -5,7 +5,7 @@ public class UpgradeManager : MonoBehaviour
 {
     [Header("Base Stats")]
     public float baseCritChance = 0;
-    public float baseCritHit = 0;
+    public float baseCritHit = 1;
     public float baseWageMultiplier = 1;
 
     [Header("Percentage")]
