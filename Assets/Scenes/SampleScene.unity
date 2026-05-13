@@ -792,6 +792,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeTester
   UpgradeManager: {fileID: 1394523836}
   currencySystem: {fileID: 1248951591}
+  RarityRoll: {fileID: 0}
 --- !u!1 &867809724
 GameObject:
   m_ObjectHideFlags: 0
@@ -1189,9 +1190,12 @@ MonoBehaviour:
   gameOverTextUI: {fileID: 1331427003}
   upgradesTextUI: {fileID: 891715602}
   currencyTextUI: {fileID: 420411739}
-  breakdownTextUI: {fileID: 1646738547}
+  P_RarityTextUI: {fileID: 1340452681}
   currencySystem: {fileID: 1248951591}
   UpgradeManager: {fileID: 1394523836}
+  accuracySystem: {fileID: 1687724627}
+  P_rarity: {fileID: 1863526276}
+  breakdownTextUI: {fileID: 1646738547}
   rewardsSystem: {fileID: 135844986}
 --- !u!1 &1199606291
 GameObject:
@@ -1222,7 +1226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a291c6d7a74fe9c43b23c31c55b5728f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimerScript
-  timelimit: 60
+  timelimit: 120
   timerTextUI: {fileID: 1693542865}
 --- !u!4 &1199606293
 Transform:
@@ -2491,7 +2495,6 @@ MonoBehaviour:
   uIManager: {fileID: 1194155917}
   accuracySystem: {fileID: 1687724627}
   rewardsSystem: {fileID: 135844986}
-  currentPromptRarity: 
 --- !u!4 &1863526277
 Transform:
   m_ObjectHideFlags: 0
