@@ -186,13 +186,6 @@ public class Prompt_Rarity : MonoBehaviour
         fields.Add(current.ToString());
         return fields;
     }
-    
-
-    // void Start()
-    // {
-    //     ReadCSV_Parser();
-    // }
-
     void Awake()
     {
         ReadCSV_Parser();
