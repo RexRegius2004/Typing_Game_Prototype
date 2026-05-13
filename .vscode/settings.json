@@ -70,10 +70,16 @@
     "dotnet.defaultSolution": "Typing_Game_Prototype.slnx",
     "dotnet.enableWorkspaceBasedDevelopment": false,
     "cSpell.words": [
+        "backface",
         "Behaviour",
         "FEFF",
+        "Lightmap",
+        "Lightmaps",
         "Mathf",
+        "Occluder",
         "Prefs",
+        "rgba",
+        "Skybox",
         "UGUI"
     ]
 }
