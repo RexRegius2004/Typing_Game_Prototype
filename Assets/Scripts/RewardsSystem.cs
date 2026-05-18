@@ -8,6 +8,7 @@ public class RewardsSystem : MonoBehaviour
     public AccuracySystem accuracySystem;
     public TimerScript timerScript;
     public CurrencySystem currencySystem;
+    public UpgradeManager upgradeManager;
 
     [Header("Reward Settings")]
 
@@ -82,7 +83,7 @@ public class RewardsSystem : MonoBehaviour
 
         // FINAL REWARD
         finalMoney =
-        Mathf.FloorToInt(subtotal) + criticalMoney;
+        Mathf.FloorToInt(subtotal) + criticalMoney + upgradeManager.currentBonus;
 
         // MINIMUM REWARD
         finalMoney = Mathf.Max(finalMoney, 10);

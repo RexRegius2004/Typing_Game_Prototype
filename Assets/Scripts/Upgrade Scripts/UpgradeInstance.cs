@@ -29,14 +29,19 @@ public class UpgradeInstance
         return "Lv. " + currentLevel + "/" + data.maxLevel;
     }
 
-    public float GetCritChanceBonus()
+    public float GetCritChance()
     {
         return data.critChance * currentLevel;
     }
 
-    public float GetCritHitBonus()
+    public float GetCritHit()
     {
         return data.critHit * currentLevel;
+    }
+
+    public int GetBonus()
+    {
+        return data.bonus * currentLevel;
     }
 
     

@@ -7,18 +7,17 @@ public class UpgradeManager : MonoBehaviour
     public float baseCritChance = 0;
     public float baseCritHit = 1;
     public float baseWageMultiplier = 1;
+    public int baseBonus = 0;
 
-    [Header("Percentage")]
+    [Header("Current Stats")]
     public float currentCritChance;
     public float currentCritHit;
     public float currentWageMultiplier;
+    public int currentBonus;
+    private int bonusCalculated;
 
-    [Header("Upgrade Bonuses")]
-    public int DelayTacticsBonus;
-    public int ConsistencyBonus;
-    public int PerfectAccuracyBonus;
-    public int HighAccuracyBonus;
-    private int AHeadOfScheduleBonus;
+
+    
     
     public List<UpgradeInstance> upgrades = new List<UpgradeInstance>();
 
@@ -53,18 +52,23 @@ public class UpgradeManager : MonoBehaviour
 }
     public void RecalculateStats()
     {
+        
         // Reset to base
         currentCritChance = baseCritChance;
         currentCritHit = baseCritHit;
+        currentBonus = baseBonus;
 
         foreach (var upgrade in upgrades)
         {
-            currentCritChance += upgrade.GetCritChanceBonus();
-            currentCritHit += upgrade.GetCritHitBonus();
+            currentCritChance += upgrade.GetCritChance();
+            currentCritHit += upgrade.GetCritHit();
+            bonusCalculated += upgrade.GetBonus();
         }
 
+        currentBonus = bonusCalculated;
+        bonusCalculated = 0;
         Debug.Log("CritHit: " + currentCritHit + 
-          " CritChance: " + currentCritChance);
+          " CritChance: " + currentCritChance + "Bonuses" + currentBonus);
     }
 
     public void ResetUpgrades()
@@ -75,10 +79,10 @@ public class UpgradeManager : MonoBehaviour
     }
 
     void DebugUpgrades()
-{
-    foreach (var upgrade in upgrades)
     {
-        Debug.Log(upgrade.data.upgradeName + " - " + upgrade.GetLevelText());
+        foreach (var upgrade in upgrades)
+        {
+            Debug.Log(upgrade.data.upgradeName + " - " + upgrade.GetLevelText());
+        }
     }
-}
 }
