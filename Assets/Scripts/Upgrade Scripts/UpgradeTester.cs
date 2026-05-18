@@ -5,15 +5,50 @@ public class DebugTester : MonoBehaviour
 {
     public UpgradeManager UpgradeManager;
     public CurrencySystem currencySystem;
-    private UpgradeData testUpgrade;
+    public UpgradeData[] testUpgrade;
     void Update()
     {
     }
 
     [ProButton]
-    void AddUpgrade()
+    void AddWage()
     {
-        UpgradeManager.AddUpgrade(testUpgrade);
+        UpgradeManager.AddUpgrade(testUpgrade[0]);
+        Debug.Log("Upgrade Applied!");
+    }
+
+    [ProButton]
+    void AddCritChance()
+    {
+        UpgradeManager.AddUpgrade(testUpgrade[1]);
+        Debug.Log("Upgrade Applied!");
+    }
+
+    [ProButton]
+    void AddCritHit()
+    {
+        UpgradeManager.AddUpgrade(testUpgrade[2]);
+        Debug.Log("Upgrade Applied!");
+    }
+
+    [ProButton]
+    void AddAheadSchedule()
+    {
+        UpgradeManager.AddUpgrade(testUpgrade[3]);
+        Debug.Log("Upgrade Applied!");
+    }
+
+    [ProButton]
+    void AddDelayTactics()
+    {
+        UpgradeManager.AddUpgrade(testUpgrade[4]);
+        Debug.Log("Upgrade Applied!");
+    }
+
+    [ProButton]
+    void AddConsistencyBonus()
+    {
+        UpgradeManager.AddUpgrade(testUpgrade[5]);
         Debug.Log("Upgrade Applied!");
     }
 
