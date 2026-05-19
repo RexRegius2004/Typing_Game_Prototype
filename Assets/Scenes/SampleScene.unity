@@ -167,7 +167,7 @@ MonoBehaviour:
   accuracySystem: {fileID: 1687724627}
   timerScript: {fileID: 1199606292}
   currencySystem: {fileID: 1248951591}
-  upgradeManager: {fileID: 0}
+  upgradeManager: {fileID: 1394523836}
   baseReward: 10
   wordValue: 0.5
   speedValue: 0.25
@@ -794,6 +794,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeTester
   UpgradeManager: {fileID: 1394523836}
   currencySystem: {fileID: 1248951591}
+  RarityRoll: {fileID: 1863526276}
   testUpgrade:
   - {fileID: 11400000, guid: 8257f8ac753dc9b45b8839e02ace8aaa, type: 2}
   - {fileID: 11400000, guid: 39f73ad04d60be64ead899e723459165, type: 2}
@@ -1462,10 +1463,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27939e91a5076b147989876209c2486c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
-  baseCritChance: 0
-  baseCritHit: 0
-  baseWageMultiplier: 0
-  baseBonus: 0
+  baseCritChance: 1
+  baseCritHit: 1.5
+  baseWageMultiplier: 1
+  baseBonus: 1
   currentCritChance: 0
   currentCritHit: 0
   currentWageMultiplier: 0

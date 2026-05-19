@@ -82,8 +82,7 @@ public class RewardsSystem : MonoBehaviour
         subtotal *= difficultyMultiplier;
 
         // FINAL REWARD
-        finalMoney =
-        Mathf.FloorToInt(subtotal) + criticalMoney + upgradeManager.currentBonus;
+        finalMoney = Mathf.FloorToInt(subtotal) + criticalMoney + upgradeManager.currentBonus;
 
         // MINIMUM REWARD
         finalMoney = Mathf.Max(finalMoney, 10);
