@@ -1237,6 +1237,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TimerScript
   timelimit: 240
   timerTextUI: {fileID: 1693542865}
+  upgradeManager: {fileID: 0}
 --- !u!4 &1199606293
 Transform:
   m_ObjectHideFlags: 0
@@ -1464,13 +1465,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
   baseCritChance: 1
-  baseCritHit: 1.5
-  baseWageMultiplier: 1
-  baseBonus: 1
+  baseCritHit: 1
+  aheadOfSchduleThreshhold: 30
   currentCritChance: 0
   currentCritHit: 0
-  currentWageMultiplier: 0
-  currentBonus: 0
+  currentWageBonus: 0
+  currentAheadSchedBonus: 0
+  currentDelayBonus: 0
+  currentconsistencymultiplier: 0
+  timerScript: {fileID: 0}
 --- !u!4 &1394523837
 Transform:
   m_ObjectHideFlags: 0

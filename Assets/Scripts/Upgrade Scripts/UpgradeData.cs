@@ -9,5 +9,8 @@ public class UpgradeData : ScriptableObject
     [Header("Stat Bonuses Per Level")]
     public float critChance;
     public float critHit;
-    public int bonus;
+    public float wageMultipler;
+    public float aheadSchedMultiplier;
+    public int delaytacticbonus;
+    public float consistencyBonusMultiplier;
 }
