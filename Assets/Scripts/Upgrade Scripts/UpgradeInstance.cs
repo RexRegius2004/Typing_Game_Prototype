@@ -39,10 +39,24 @@ public class UpgradeInstance
         return data.critHit * currentLevel;
     }
 
-    public int GetBonus()
+    public int GetWageBonus()
     {
-        return data.bonus * currentLevel;
+        return Mathf.FloorToInt(data.wageMultipler * currentLevel);
+    }
+    
+    public int GetAheadSchedBonus()
+    {
+        return Mathf.FloorToInt(data.aheadSchedMultiplier * currentLevel);
     }
 
+    public int GetDelayBonus()
+    {
+        return data.delaytacticbonus * currentLevel;
+    }
+
+    public float GetConsistencyBonus()
+    {
+        return data.consistencyBonusMultiplier * currentLevel;
+    }
     
 }

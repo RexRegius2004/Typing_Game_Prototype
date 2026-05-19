@@ -1,24 +1,26 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Data.Common;
 
 public class UpgradeManager : MonoBehaviour
 {
     [Header("Base Stats")]
     public float baseCritChance = 0;
     public float baseCritHit = 1;
-    public float baseWageMultiplier = 1;
-    public int baseBonus = 0;
+    public int aheadOfSchduleThreshhold = 30;
+    
 
     [Header("Current Stats")]
     public float currentCritChance;
     public float currentCritHit;
-    public float currentWageMultiplier;
-    public int currentBonus;
-    private int bonusCalculated;
+    public int currentWageBonus = 0;
+    public int currentAheadSchedBonus = 0;
+    public int currentDelayBonus = 0;
+    public float currentconsistencymultiplier = 0;
 
+    public TimerScript timerScript;
+    
 
-    
-    
     public List<UpgradeInstance> upgrades = new List<UpgradeInstance>();
 
     void Start()
@@ -56,19 +58,36 @@ public class UpgradeManager : MonoBehaviour
         // Reset to base
         currentCritChance = baseCritChance;
         currentCritHit = baseCritHit;
-        currentBonus = baseBonus;
 
         foreach (var upgrade in upgrades)
         {
             currentCritChance += upgrade.GetCritChance();
-            currentCritHit += upgrade.GetCritHit();
-            bonusCalculated += upgrade.GetBonus();
+            currentCritHit += upgrade.GetCritHit();  
+
+            switch(upgrade.data.upgradeName)
+            {
+                case ("Wage"):
+                currentWageBonus = upgrade.GetWageBonus();
+                break;
+
+                case ("Ahead of Schedule"):
+                currentAheadSchedBonus = upgrade.GetAheadSchedBonus();
+                break;
+
+                case ("Delay Tactics"):
+                currentDelayBonus = upgrade.GetDelayBonus();
+                break;
+
+                case ("Consistency Bonus"):
+                currentconsistencymultiplier = upgrade.GetConsistencyBonus();
+                break;
+            }
         }
 
-        currentBonus = bonusCalculated;
-        bonusCalculated = 0;
+
+
         Debug.Log("CritHit: " + currentCritHit + 
-          " CritChance: " + currentCritChance + "Bonuses" + currentBonus);
+          " CritChance: " + currentCritChance);
     }
 
     public void ResetUpgrades()
@@ -84,5 +103,33 @@ public class UpgradeManager : MonoBehaviour
         {
             Debug.Log(upgrade.data.upgradeName + " - " + upgrade.GetLevelText());
         }
+    }
+
+
+
+    public bool HasUpgrade(string upgradeName)
+    {
+        foreach (var upgrade in upgrades)
+        {
+            if (upgrade.data.upgradeName == upgradeName)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public int AheadofSchedule()
+    {
+        if (aheadOfSchduleThreshhold < timerScript.GetRemainingTime())
+        return currentAheadSchedBonus;
+        else
+        return 0;
+    }
+
+    public float ConsistencyBonus()
+    {
+        return PlayerPrefs.GetInt("WinStreak") * currentconsistencymultiplier;
     }
 }

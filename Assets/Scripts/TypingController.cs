@@ -275,6 +275,7 @@ public class TypingController : MonoBehaviour
 
         uIManager.OpenGameOverUI(true);
 
+        PlayerPrefs.SetInt("WinStreak", PlayerPrefs.GetInt("WinStreak") + 1);
         Debug.Log("You win!");
     }
 
@@ -377,7 +378,7 @@ public class TypingController : MonoBehaviour
         ShowFinalMistakes();
 
         uIManager.OpenGameOverUI(false);
-
+        PlayerPrefs.SetInt("WinStreak", 0);
         Debug.Log("You Lose! Time ran out.");
     }
 }
