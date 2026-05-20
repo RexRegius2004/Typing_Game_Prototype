@@ -14,10 +14,12 @@ public class TimerScript : MonoBehaviour
 
     public Action OnTimerEnd;
 
+    public UpgradeManager upgradeManager;
+
     // Start is called once before the first execution of Update after the MonoBehavior is created
     void Start()
     {
-        currentTime = timelimit;
+        currentTime = timelimit + upgradeManager.currentDelayBonus;
         UpdateTimerUI();
     }
 
@@ -47,7 +49,7 @@ public class TimerScript : MonoBehaviour
 
         timerTextUI.text = $"{minutes:00}:{seconds:00}";
 
-        // Optional panic color
+        
         if (currentTime <= 10f)
             timerTextUI.color = Color.red;
     }

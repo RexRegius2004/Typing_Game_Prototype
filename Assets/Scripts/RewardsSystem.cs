@@ -39,6 +39,7 @@ public class RewardsSystem : MonoBehaviour
     [Header("Critical Hits")]
     public int criticalMoney;
 
+    private int bonusTotal;
     public void AddCriticalReward(int amount)
     {
         criticalMoney += amount;
@@ -81,14 +82,16 @@ public class RewardsSystem : MonoBehaviour
         // FINAL MULTIPLIER
         subtotal *= difficultyMultiplier;
 
+        bonusTotal = upgradeManager.currentWageBonus + upgradeManager.AheadofSchedule();
         // FINAL REWARD
-        finalMoney = Mathf.FloorToInt(subtotal) + criticalMoney + upgradeManager.currentBonus;
-
+        finalMoney = Mathf.FloorToInt(subtotal * upgradeManager.ConsistencyBonus()) + criticalMoney + bonusTotal;
+        
         // MINIMUM REWARD
         finalMoney = Mathf.Max(finalMoney, 10);
 
         
         currencySystem.AddMoney(finalMoney);
+
     }
 
     int CountWords(string text)
