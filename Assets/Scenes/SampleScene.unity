@@ -1237,7 +1237,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TimerScript
   timelimit: 240
   timerTextUI: {fileID: 1693542865}
-  upgradeManager: {fileID: 0}
+  upgradeManager: {fileID: 1394523836}
 --- !u!4 &1199606293
 Transform:
   m_ObjectHideFlags: 0
@@ -1464,16 +1464,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27939e91a5076b147989876209c2486c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
-  baseCritChance: 1
+  baseCritChance: 0.5
   baseCritHit: 1
   aheadOfSchduleThreshhold: 30
-  currentCritChance: 0
-  currentCritHit: 0
+  currentCritChance: 0.5
+  currentCritHit: 31
   currentWageBonus: 0
   currentAheadSchedBonus: 0
   currentDelayBonus: 0
   currentconsistencymultiplier: 0
-  timerScript: {fileID: 0}
+  timerScript: {fileID: 1199606292}
 --- !u!4 &1394523837
 Transform:
   m_ObjectHideFlags: 0
@@ -1506,7 +1506,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1449124862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2286,8 +2286,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
-  m_fontSizeBase: 50
+  m_fontSize: 35
+  m_fontSizeBase: 35
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2325,7 +2325,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -707.0917, y: -123.29999, z: -589.5387, w: 36.83191}
+  m_margin: {x: -841.56934, y: -123.29999, z: -682.6389, w: -565.73145}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -2498,9 +2498,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TypingController
   targetTextUI: {fileID: 1828985495}
-  typedTextUI: {fileID: 1449124862}
   targetText: 
-  wordsPerChunk: 10
   showCaret: 1
   caretBlinkSpeed: 0.5
   Prompt_Tier: {fileID: 2119268844}
