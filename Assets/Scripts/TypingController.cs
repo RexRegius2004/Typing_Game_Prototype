@@ -6,20 +6,13 @@ public class TypingController : MonoBehaviour
 {
     [Header("UI References")]
     public TextMeshProUGUI targetTextUI;
-    public TextMeshProUGUI typedTextUI;
 
     [Header("Typing Settings")]
-    [TextArea(3, 5)]
+    [TextArea(3, 10)]
     public string targetText;
 
     private string typedText = "";
-
-    [Header("Chunk Settings")]
-    public int wordsPerChunk = 8;
-
-    private string[] promptWords;
-    private int currentChunkIndex = 0;
-    private string currentTargetChunk = "";
+    private int currentIndex = 0;
 
     [Header("Caret Settings")]
     public bool showCaret = true;
@@ -33,17 +26,18 @@ public class TypingController : MonoBehaviour
 
     [Header("Timer")]
     public TimerScript timerScript;
+
     private bool isGameActive = true;
 
+    [Header("Systems")]
     public UIManager uIManager;
     public AccuracySystem accuracySystem;
     public RewardsSystem rewardsSystem;
     public UpgradeManager upgradeManager;
 
     [Header("Critical Hit")]
-    [Range(0f, 1f)]
     private bool[] criticalLetters;
-    
+
     [HideInInspector]
     public string currentPromptRarity { get; private set; } = "Common";
 
@@ -54,9 +48,9 @@ public class TypingController : MonoBehaviour
 
         targetText = Randomized_PromptRarity();
 
-        promptWords = targetText.Split(' ');
+        GenerateCriticalLetters();
 
-        LoadNextChunk();
+        UpdateTextUI();
 
         timerScript.OnTimerEnd += HandleTimeUp;
     }
@@ -66,9 +60,14 @@ public class TypingController : MonoBehaviour
         if (!isGameActive)
             return;
 
-        HandleCaretBlink();
+        //HandleCaretBlink();
+
         InputTyping();
     }
+
+    // =====================================
+    // CARET BLINK
+    // =====================================
 
     void HandleCaretBlink()
     {
@@ -77,191 +76,224 @@ public class TypingController : MonoBehaviour
         if (caretTimer >= caretBlinkSpeed)
         {
             caretTimer = 0f;
+
             caretVisible = !caretVisible;
 
-            UpdateTypedTextUI();
+            UpdateTextUI();
         }
     }
+
+    // =====================================
+    // TYPING INPUT
+    // =====================================
 
     void InputTyping()
     {
         foreach (char c in Input.inputString)
         {
+            // BACKSPACE
             if (c == '\b')
             {
                 if (typedText.Length > 0)
                 {
-                    typedText = typedText.Substring(
-                        0,
-                        typedText.Length - 1
-                    );
+                    typedText =
+                        typedText.Substring(
+                            0,
+                            typedText.Length - 1
+                        );
+
+                    currentIndex--;
                 }
             }
+
+            // IGNORE ENTER
             else if (c == '\n' || c == '\r')
             {
                 continue;
             }
+
+            // NORMAL INPUT
             else
             {
-                if (typedText.Length < currentTargetChunk.Length)
+                if (currentIndex < targetText.Length)
                 {
+                    char expectedChar =
+                        targetText[currentIndex];
+
                     typedText += c;
 
-                    char expectedChar =
-                        currentTargetChunk[typedText.Length - 1];
+                    accuracySystem.RegisterInput(
+                        c,
+                        expectedChar
+                    );
 
-                    accuracySystem.RegisterInput(c, expectedChar);
-                    CheckCriticalHit(c, expectedChar);
+                    CheckCriticalHit(
+                        c,
+                        expectedChar
+                    );
+
+                    currentIndex++;
                 }
             }
         }
 
-        UpdateTypedTextUI();
-        CheckFinished();
-    }
+        UpdateTextUI();
 
-        void UpdateTypedTextUI()
-    {
-        // =====================================
-        // TARGET TEXT DISPLAY
-        // =====================================
-
-        string targetResult = "";
-
-        for (int i = 0; i < currentTargetChunk.Length; i++)
-        {
-            char letter = currentTargetChunk[i];
-
-            if (criticalLetters[i])
-            {
-                targetResult +=
-                    $"<color=#FFD700>{letter}</color>";
-            }
-            else
-            {
-                targetResult += letter;
-            }
-        }
-
-        targetTextUI.text = targetResult;
-
-        // =====================================
-        // TYPED TEXT DISPLAY
-        // =====================================
-
-        string typedResult = "";
-
-        for (int i = 0; i < typedText.Length; i++)
-        {
-            if (
-                i < currentTargetChunk.Length &&
-                typedText[i] == currentTargetChunk[i]
-            )
-            {
-                typedResult +=
-                    $"<color=white>{typedText[i]}</color>";
-            }
-            else
-            {
-                typedResult +=
-                    $"<color=red>{typedText[i]}</color>";
-            }
-        }
-
-        // =====================================
-        // BLINKING CARET
-        // =====================================
-
-        if (showCaret && caretVisible)
-        {
-            typedResult += "<color=white>|</color>";
-        }
-
-        typedTextUI.text = typedResult;
-    }
-
-    void LoadNextChunk()
-    {
-        typedText = "";
-
-        int startIndex =
-            currentChunkIndex * wordsPerChunk;
-
-        // Finished entire prompt
-        if (startIndex >= promptWords.Length)
+        // FINISH
+        if (typedText.Length >= targetText.Length)
         {
             FinishGame();
-            return;
         }
+    }
 
-        int endIndex = Mathf.Min(
-            startIndex + wordsPerChunk,
-            promptWords.Length
-        );
+    // =====================================
+    // UPDATE TEXT UI
+    // =====================================
 
-        currentTargetChunk = "";
+    void UpdateTextUI()
+    {
+        string result = "";
 
-        for (int i = startIndex; i < endIndex; i++)
+        for (int i = 0; i < targetText.Length; i++)
         {
-            currentTargetChunk += promptWords[i];
+            char targetChar = targetText[i];
 
-            if (i < endIndex - 1)
+            // =====================================
+            // TYPED CHARACTERS
+            // =====================================
+
+            if (i < typedText.Length)
             {
-                currentTargetChunk += " ";
+                if (typedText[i] == targetChar)
+                {
+                    result +=
+                        $"<color=white>{targetChar}</color>";
+                }
+                else
+                {
+                    result +=
+                        $"<color=red>{targetChar}</color>";
+                }
+            }
+
+            // =====================================
+            // CURRENT CHARACTER
+            // =====================================
+
+            else if (i == currentIndex)
+            {
+                // Critical Letter
+                if (
+                    criticalLetters != null &&
+                    criticalLetters[i]
+                )
+                {
+                    result +=
+                        $"<mark=#FFD70088><color=#FFD700>{targetChar}</color></mark>";
+                }
+                else
+                {
+                    result +=
+                        $"<mark=#FFFFFF44>{targetChar}</mark>";
+                }
+
+                /*
+                if (showCaret && caretVisible)
+                {
+                    result += "<color=white>|</color>";
+                }
+                */
+            }
+
+            // =====================================
+            // UNTOUCHED CHARACTERS
+            // =====================================
+
+            else
+            {
+                // Critical Letter
+                if (
+                    criticalLetters != null &&
+                    criticalLetters[i]
+                )
+                {
+                    result +=
+                        $"<color=#FFD700>{targetChar}</color>";
+                }
+                else
+                {
+                    result +=
+                        $"<color=#777777>{targetChar}</color>";
+                }
             }
         }
 
-        
+        targetTextUI.text = result;
 
-        GenerateCriticalLetters();
-        UpdateTypedTextUI();
     }
+
+    // =====================================
+    // CRITICAL LETTERS
+    // =====================================
 
     void GenerateCriticalLetters()
     {
         criticalLetters =
-            new bool[currentTargetChunk.Length];
+            new bool[targetText.Length];
 
-    for (int i = 0; i < currentTargetChunk.Length; i++)
+        for (int i = 0; i < targetText.Length; i++)
         {
-            if (currentTargetChunk[i] == ' ')
+            // Ignore spaces
+            if (targetText[i] == ' ')
                 continue;
 
             criticalLetters[i] =
-                Random.value <= upgradeManager.currentCritChance;
+                Random.value <=
+                upgradeManager.currentCritChance;
         }
     }
 
-    void CheckCriticalHit(char typedChar, char expectedChar)
+    void CheckCriticalHit(
+        char typedChar,
+        char expectedChar
+    )
     {
-        int index = typedText.Length - 1;
+        int index = currentIndex;
 
-        if (index < 0 || index >= criticalLetters.Length)
+        if (
+            index < 0 ||
+            index >= criticalLetters.Length
+        )
             return;
 
         // Must be critical letter
         if (!criticalLetters[index])
             return;
 
-        // Must be typed correctly
+        // Must type correctly
         if (typedChar != expectedChar)
             return;
 
-        // GIVE BONUS
-        rewardsSystem.AddCriticalReward(Mathf.RoundToInt(rewardsSystem.wordValue * upgradeManager.currentCritHit));
+        int critReward = Mathf.Max(
+            1,
+            Mathf.RoundToInt(
+                rewardsSystem.wordValue *
+                upgradeManager.currentCritHit
+            )
+        );
 
-        Debug.Log("CRITICAL HIT!");
+        rewardsSystem.AddCriticalReward(
+            critReward
+        );
+
+        Debug.Log(
+            "CRITICAL HIT! +" + critReward
+        );
     }
 
-    void CheckFinished()
-    {
-        if (typedText == currentTargetChunk)
-        {
-            currentChunkIndex++;
-
-            LoadNextChunk();
-        }
-    }
+    // =====================================
+    // FINISH GAME
+    // =====================================
 
     void FinishGame()
     {
@@ -275,32 +307,35 @@ public class TypingController : MonoBehaviour
 
         uIManager.OpenGameOverUI(true);
 
-        PlayerPrefs.SetInt("WinStreak", PlayerPrefs.GetInt("WinStreak") + 1);
         Debug.Log("You win!");
     }
+
+    // =====================================
+    // SHOW FINAL ERRORS
+    // =====================================
 
     void ShowFinalMistakes()
     {
         string result = "";
 
-        for (int i = 0; i < currentTargetChunk.Length; i++)
+        for (int i = 0; i < targetText.Length; i++)
         {
             if (
                 i < typedText.Length &&
-                typedText[i] == currentTargetChunk[i]
+                typedText[i] == targetText[i]
             )
             {
                 result +=
-                    $"<color=white>{currentTargetChunk[i]}</color>";
+                    $"<color=white>{targetText[i]}</color>";
             }
             else
             {
                 result +=
-                    $"<color=red>{currentTargetChunk[i]}</color>";
+                    $"<color=red>{targetText[i]}</color>";
             }
         }
 
-        typedTextUI.text = result;
+        targetTextUI.text = result;
     }
 
 #region Prompt Rarity
@@ -339,37 +374,36 @@ public class TypingController : MonoBehaviour
         {
             chosenRarity = rows.Common;
             currentPromptRarity = "Common";
-            Debug.Log(rarityRoll);
         }
         else if (rarityRoll < 0.80f)
         {
             chosenRarity = rows.Uncommon;
             currentPromptRarity = "Uncommon";
-            Debug.Log(rarityRoll);
         }
         else if (rarityRoll < 0.99f)
         {
             chosenRarity = rows.Rare;
             currentPromptRarity = "Rare";
-            Debug.Log(rarityRoll);
         }
         else if (rarityRoll < 1f)
         {
             chosenRarity = rows.Epic;
             currentPromptRarity = "Epic";
-            Debug.Log(rarityRoll);
         }
         else
         {
             chosenRarity = rows.Legendary;
             currentPromptRarity = "Legendary";
-            Debug.Log(rarityRoll);
         }
 
         return chosenRarity;
     }
 
 #endregion
+
+    // =====================================
+    // TIMER END
+    // =====================================
 
     void HandleTimeUp()
     {
@@ -378,7 +412,7 @@ public class TypingController : MonoBehaviour
         ShowFinalMistakes();
 
         uIManager.OpenGameOverUI(false);
-        PlayerPrefs.SetInt("WinStreak", 0);
+
         Debug.Log("You Lose! Time ran out.");
     }
 }
