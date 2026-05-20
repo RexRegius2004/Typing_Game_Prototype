@@ -6,10 +6,12 @@ public class UIManager : MonoBehaviour
 {
     [Header("UI Settings")]
     public GameObject gameOverUI;
+    public GameObject UpgradePanel;
     public TextMeshProUGUI gameOverTextUI;
     public TextMeshProUGUI upgradesTextUI;
     public TextMeshProUGUI currencyTextUI;
     public TextMeshProUGUI P_RarityTextUI;
+    
 
     public CurrencySystem currencySystem;
     public UpgradeManager UpgradeManager;
@@ -23,6 +25,7 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         gameOverUI.SetActive(false);
+        UpgradePanel.SetActive(false);
     }
 
     // Update is called once per frame
@@ -69,6 +72,17 @@ public class UIManager : MonoBehaviour
         {
             P_RarityTextUI.text = $"Rarity: {P_rarity.currentPromptRarity}";
         }
+    }
+
+    public void OpenUpgradePanel()
+    {
+        if (UpgradePanel != null)
+        {
+            UpgradePanel.SetActive(!UpgradePanel.activeSelf); 
+            Time.timeScale = UpgradePanel.activeSelf ? 0 : 1; 
+            // Pause game when panel is open and resume when closed
+        }
+
     }
 
 

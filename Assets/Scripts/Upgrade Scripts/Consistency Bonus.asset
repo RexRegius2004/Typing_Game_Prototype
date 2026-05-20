@@ -13,7 +13,10 @@ MonoBehaviour:
   m_Name: Consistency Bonus
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
   upgradeName: Consistency Bonus
-  maxLevel: 0
+  maxLevel: 5
   critChance: 0
   critHit: 0
-  bonus: 0
+  wageMultipler: 0
+  aheadSchedMultiplier: 0
+  delaytacticbonus: 0
+  consistencyBonusMultiplier: 0
