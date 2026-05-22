@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.Data.Common;
 
 public class UpgradeManager : MonoBehaviour
 {
@@ -8,110 +7,323 @@ public class UpgradeManager : MonoBehaviour
     public float baseCritChance = 0;
     public float baseCritHit = 1;
     public int aheadOfSchduleThreshhold = 30;
-    
 
     [Header("Current Stats")]
     public float currentCritChance;
     public float currentCritHit;
+
     public int currentWageBonus = 0;
     public int currentAheadSchedBonus = 0;
     public int currentDelayBonus = 0;
+
     public float currentconsistencymultiplier = 0;
 
+    [Header("References")]
     public TimerScript timerScript;
-    
 
-    public List<UpgradeInstance> upgrades = new List<UpgradeInstance>();
+    [Header("Upgrade Database")]
+    public UpgradeData[] allUpgradeData;
+
+    [Header("Owned Upgrades")]
+    public List<UpgradeInstance> upgrades =
+        new List<UpgradeInstance>();
 
     void Start()
     {
-        RecalculateStats();
+        LoadUpgrades();
     }
 
-    public void AddUpgrade(UpgradeData upgradeData)
-{
-    UpgradeInstance existing = upgrades.Find(u => u.data == upgradeData);
+    // =====================================
+    // ADD / LEVEL UP UPGRADE
+    // =====================================
 
-    if (existing != null)
+    public void AddUpgrade(
+        UpgradeData upgradeData
+    )
     {
-        if (!existing.IsMaxLevel())
+        UpgradeInstance existing =
+            upgrades.Find(
+                u => u.data == upgradeData
+            );
+
+        if (existing != null)
         {
-            existing.LevelUp();
+            if (!existing.IsMaxLevel())
+            {
+                existing.LevelUp();
+            }
+            else
+            {
+                Debug.Log(
+                    upgradeData.upgradeName +
+                    " is already MAX level!"
+                );
+
+                return;
+            }
         }
         else
         {
-            Debug.Log(upgradeData.upgradeName + " is already MAX level!");
-            return;
+            upgrades.Add(
+                new UpgradeInstance(upgradeData)
+            );
         }
-    }
-    else
-    {
-        upgrades.Add(new UpgradeInstance(upgradeData));
+
+        RecalculateStats();
+
+        SaveUpgrades();
+
+        DebugUpgrades();
     }
 
-    RecalculateStats();
-    DebugUpgrades();
-}
+    // =====================================
+    // RECALCULATE ALL STATS
+    // =====================================
+
     public void RecalculateStats()
     {
-        
-        // Reset to base
-        currentCritChance = baseCritChance;
-        currentCritHit = baseCritHit;
+        // RESET TO BASE
+
+        currentCritChance =
+            baseCritChance;
+
+        currentCritHit =
+            baseCritHit;
+
+        currentWageBonus = 0;
+        currentAheadSchedBonus = 0;
+        currentDelayBonus = 0;
+        currentconsistencymultiplier = 0;
+
+        // CALCULATE
 
         foreach (var upgrade in upgrades)
         {
-            currentCritChance += upgrade.GetCritChance();
-            currentCritHit += upgrade.GetCritHit();  
+            currentCritChance +=
+                upgrade.GetCritChance();
 
-            switch(upgrade.data.upgradeName)
+            currentCritHit +=
+                upgrade.GetCritHit();
+
+            switch (
+                upgrade.data.upgradeName
+            )
             {
-                case ("Wage"):
-                currentWageBonus = upgrade.GetWageBonus();
-                break;
+                case "Wage":
 
-                case ("Ahead of Schedule"):
-                currentAheadSchedBonus = upgrade.GetAheadSchedBonus();
-                break;
+                    currentWageBonus =
+                        upgrade.GetWageBonus();
 
-                case ("Delay Tactics"):
-                currentDelayBonus = upgrade.GetDelayBonus();
-                break;
+                    break;
 
-                case ("Consistency Bonus"):
-                currentconsistencymultiplier = upgrade.GetConsistencyBonus();
-                break;
+                case "Ahead of Schedule":
+
+                    currentAheadSchedBonus =
+                        upgrade.GetAheadSchedBonus();
+
+                    break;
+
+                case "Delay Tactics":
+
+                    currentDelayBonus =
+                        upgrade.GetDelayBonus();
+
+                    break;
+
+                case "Consistency Bonus":
+
+                    currentconsistencymultiplier =
+                        upgrade.GetConsistencyBonus();
+
+                    break;
             }
         }
 
-
-
-        Debug.Log("CritHit: " + currentCritHit + 
-          " CritChance: " + currentCritChance);
+        Debug.Log(
+            "CritHit: " +
+            currentCritHit +
+            " | CritChance: " +
+            currentCritChance
+        );
     }
+
+    // =====================================
+    // SAVE UPGRADES
+    // =====================================
+
+    public void SaveUpgrades()
+    {
+        string saveData = "";
+
+        foreach (var upgrade in upgrades)
+        {
+            saveData +=
+                upgrade.data.upgradeName +
+                "|" +
+                upgrade.currentLevel +
+                ";";
+        }
+
+        PlayerPrefs.SetString(
+            "UPGRADES",
+            saveData
+        );
+
+        PlayerPrefs.Save();
+
+        Debug.Log(
+            "Upgrades Saved: " +
+            saveData
+        );
+    }
+
+    // =====================================
+    // LOAD UPGRADES
+    // =====================================
+
+    public void LoadUpgrades()
+    {
+        if (!PlayerPrefs.HasKey("UPGRADES"))
+        {
+            Debug.Log(
+                "No upgrade save found."
+            );
+
+            RecalculateStats();
+
+            return;
+        }
+
+        upgrades.Clear();
+
+        string saveData =
+            PlayerPrefs.GetString(
+                "UPGRADES"
+            );
+
+        string[] savedUpgrades =
+            saveData.Split(';');
+
+        foreach (string entry in savedUpgrades)
+        {
+            if (
+                string.IsNullOrEmpty(entry)
+            )
+                continue;
+
+            string[] parts =
+                entry.Split('|');
+
+            string upgradeName =
+                parts[0];
+
+            int level =
+                int.Parse(parts[1]);
+
+            UpgradeData foundData =
+                FindUpgradeDataByName(
+                    upgradeName
+                );
+
+            if (foundData != null)
+            {
+                UpgradeInstance
+                    newUpgrade =
+                    new UpgradeInstance(
+                        foundData
+                    );
+
+                newUpgrade.currentLevel =
+                    level;
+
+                upgrades.Add(newUpgrade);
+            }
+        }
+
+        RecalculateStats();
+
+        Debug.Log(
+            "Upgrades Loaded!"
+        );
+    }
+
+    // =====================================
+    // FIND UPGRADE DATA
+    // =====================================
+
+    UpgradeData FindUpgradeDataByName(
+        string upgradeName
+    )
+    {
+        foreach (
+            var data in allUpgradeData
+        )
+        {
+            if (
+                data.upgradeName ==
+                upgradeName
+            )
+            {
+                return data;
+            }
+        }
+
+        return null;
+    }
+
+    // =====================================
+    // RESET UPGRADES
+    // =====================================
 
     public void ResetUpgrades()
     {
         upgrades.Clear();
+
+        PlayerPrefs.DeleteKey(
+            "UPGRADES"
+        );
+
         RecalculateStats();
-        Debug.Log("All upgrades have been reset.");
+
+        Debug.Log(
+            "All upgrades reset."
+        );
     }
+
+    // =====================================
+    // DEBUG
+    // =====================================
 
     void DebugUpgrades()
     {
+        Debug.Log(
+            "===== UPGRADES ====="
+        );
+
         foreach (var upgrade in upgrades)
         {
-            Debug.Log(upgrade.data.upgradeName + " - " + upgrade.GetLevelText());
+            Debug.Log(
+                upgrade.data.upgradeName +
+                " - " +
+                upgrade.GetLevelText()
+            );
         }
     }
 
+    // =====================================
+    // CHECK OWNED
+    // =====================================
 
-
-    public bool HasUpgrade(string upgradeName)
+    public bool HasUpgrade(
+        string upgradeName
+    )
     {
         foreach (var upgrade in upgrades)
         {
-            if (upgrade.data.upgradeName == upgradeName)
+            if (
+                upgrade.data.upgradeName ==
+                upgradeName
+            )
             {
                 return true;
             }
@@ -120,16 +332,35 @@ public class UpgradeManager : MonoBehaviour
         return false;
     }
 
+    // =====================================
+    // AHEAD OF SCHEDULE BONUS
+    // =====================================
+
     public int AheadofSchedule()
     {
-        if (aheadOfSchduleThreshhold < timerScript.GetRemainingTime())
-        return currentAheadSchedBonus;
+        if (
+            aheadOfSchduleThreshhold <
+            timerScript.GetRemainingTime()
+        )
+        {
+            return currentAheadSchedBonus;
+        }
         else
-        return 0;
+        {
+            return 0;
+        }
     }
+
+    // =====================================
+    // CONSISTENCY BONUS
+    // =====================================
 
     public float ConsistencyBonus()
     {
-        return PlayerPrefs.GetInt("WinStreak") * currentconsistencymultiplier;
+        return
+            PlayerPrefs.GetInt(
+                "WinStreak"
+            ) *
+            currentconsistencymultiplier;
     }
 }

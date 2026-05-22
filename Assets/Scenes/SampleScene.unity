@@ -1474,6 +1474,13 @@ MonoBehaviour:
   currentDelayBonus: 0
   currentconsistencymultiplier: 0
   timerScript: {fileID: 1199606292}
+  allUpgradeData:
+  - {fileID: 11400000, guid: 8257f8ac753dc9b45b8839e02ace8aaa, type: 2}
+  - {fileID: 11400000, guid: 39f73ad04d60be64ead899e723459165, type: 2}
+  - {fileID: 11400000, guid: d63717b1c6cf8d54f8864faccf911db6, type: 2}
+  - {fileID: 11400000, guid: 5994416115890464eb31c33007a09d5a, type: 2}
+  - {fileID: 11400000, guid: d218b5721039f174494dd80f31a388c3, type: 2}
+  - {fileID: 11400000, guid: 0aaa109250670b646bf1c58694fd0a0f, type: 2}
 --- !u!4 &1394523837
 Transform:
   m_ObjectHideFlags: 0
