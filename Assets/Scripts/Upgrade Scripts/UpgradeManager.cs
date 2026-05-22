@@ -353,11 +353,11 @@ public class UpgradeManager : MonoBehaviour
 
     public float ConsistencyBonus()
     {
-        return
-            PlayerPrefs.GetInt(
-                "WinStreak"
-            ) *
-            currentconsistencymultiplier;
+        float value = PlayerPrefs.GetInt("WinStreak");
+        if (HasUpgrade("ConsistencyBonus") && value > 0)
+        return value * currentconsistencymultiplier;
+        else;
+        return 1;
     }
 
 public int GetUpgradeLevel(string upgradeName)
