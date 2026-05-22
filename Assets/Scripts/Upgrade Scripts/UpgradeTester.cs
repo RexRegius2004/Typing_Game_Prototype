@@ -3,61 +3,111 @@ using UnityEngine;
 
 public class DebugTester : MonoBehaviour
 {
+    [Header("References")]
     public UpgradeManager UpgradeManager;
     public CurrencySystem currencySystem;
     public TypingController RarityRoll;
+
+    [Header("Test Upgrades")]
     public UpgradeData[] testUpgrade;
-    void Update()
-    {
-    }
+
+    // =====================================
+    // ADD UPGRADES
+    // =====================================
 
     [ProButton]
     void AddWage()
     {
         UpgradeManager.AddUpgrade(testUpgrade[0]);
-        Debug.Log("Upgrade Applied!");
     }
 
     [ProButton]
     void AddCritChance()
     {
         UpgradeManager.AddUpgrade(testUpgrade[1]);
-        Debug.Log("Upgrade Applied!");
     }
 
     [ProButton]
     void AddCritHit()
     {
         UpgradeManager.AddUpgrade(testUpgrade[2]);
-        Debug.Log("Upgrade Applied!");
     }
 
     [ProButton]
     void AddAheadSchedule()
     {
         UpgradeManager.AddUpgrade(testUpgrade[3]);
-        Debug.Log("Upgrade Applied!");
     }
 
     [ProButton]
     void AddDelayTactics()
     {
         UpgradeManager.AddUpgrade(testUpgrade[4]);
-        Debug.Log("Upgrade Applied!");
     }
 
     [ProButton]
     void AddConsistencyBonus()
     {
         UpgradeManager.AddUpgrade(testUpgrade[5]);
-        Debug.Log("Upgrade Applied!");
     }
+
+    // =====================================
+    // RESET UPGRADES
+    // =====================================
 
     [ProButton]
     void ResetUpgrades()
     {
         UpgradeManager.ResetUpgrades();
     }
+
+    // =====================================
+    // SAVE / LOAD
+    // =====================================
+
+    [ProButton]
+    void SaveUpgrades()
+    {
+        UpgradeManager.SaveUpgrades();
+
+        Debug.Log("Manual Save Complete");
+    }
+
+    [ProButton]
+    void LoadUpgrades()
+    {
+        UpgradeManager.LoadUpgrades();
+
+        Debug.Log("Manual Load Complete");
+    }
+
+    // =====================================
+    // DELETE SAVE
+    // =====================================
+
+    [ProButton]
+    void DeleteUpgradeSave()
+    {
+        PlayerPrefs.DeleteKey("UPGRADES");
+
+        Debug.Log("Upgrade Save Deleted");
+    }
+
+    // =====================================
+    // DELETE ALL PLAYER PREFS
+    // =====================================
+
+    [ProButton]
+    void DeleteAllPlayerPrefs()
+    {
+        PlayerPrefs.DeleteAll();
+
+        Debug.Log("ALL PLAYER PREFS DELETED");
+    }
+
+    // =====================================
+    // MONEY TESTING
+    // =====================================
 
     [ProButton]
     void AddMoney()
@@ -75,5 +125,17 @@ public class DebugTester : MonoBehaviour
     void ResetMoney()
     {
         currencySystem.ResetMoney();
+    }
+
+    // =====================================
+    // DEBUG
+    // =====================================
+
+    [ProButton]
+    void PrintUpgradeSave()
+    {
+        Debug.Log(
+            PlayerPrefs.GetString("UPGRADES")
+        );
     }
 }
