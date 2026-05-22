@@ -112,4 +112,11 @@ public class Settings : MonoBehaviour
         SetMasterVolume();
         SetSFXVolume();
     }
+
+    public void BacktoMainMenu(string sceneName)
+    {
+        musicManager.PlayButtonClickSFX();
+        Time.timeScale = 1f; // Ensure the game is not paused when returning to main menu
+        UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
+    }
 }
