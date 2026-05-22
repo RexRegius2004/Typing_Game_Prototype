@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Audio;
 
 public class MusicManager : MonoBehaviour
@@ -22,7 +23,25 @@ public class MusicManager : MonoBehaviour
     {
         // Set initial music
         musicSource.clip = gameplayMusic;
+        musicSource.Play(); 
+
+        musicSource.clip = MainmenuMusic;
         musicSource.Play();
+
+        if (musicSource.clip == null)
+        {
+            if (gameplayMusic != null)
+            {
+                musicSource.clip = gameplayMusic;
+                musicSource.Play();
+            }
+            else if (MainmenuMusic != null)
+            {
+                musicSource.clip = MainmenuMusic;
+                musicSource.Play();
+            }
+        }
+        
     }
 
     // Update is called once per frame
