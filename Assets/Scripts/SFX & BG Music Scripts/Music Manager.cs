@@ -10,7 +10,7 @@ public class MusicManager : MonoBehaviour
     [SerializeField] private AudioSource Master;
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioSource sfxSource;
-    [SerializeField] private AudioMixer audioMixer;
+    public AudioMixer audioMixer;
 
     [Header("Audio Clips")]
     public AudioClip buttonClickSFX;
