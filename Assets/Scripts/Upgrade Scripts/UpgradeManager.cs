@@ -339,7 +339,7 @@ public class UpgradeManager : MonoBehaviour
 
     public int AheadofSchedule()
     {
-        if (aheadOfSchduleThreshhold < timerScript.GetRemainingTime())
+        if (aheadOfScheduleThreshhold < timerScript.GetRemainingTime())
         return currentAheadSchedBonus;
         else
         {
