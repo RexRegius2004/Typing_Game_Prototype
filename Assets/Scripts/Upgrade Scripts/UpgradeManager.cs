@@ -6,7 +6,8 @@ public class UpgradeManager : MonoBehaviour
     [Header("Base Stats")]
     public float baseCritChance = 0;
     public float baseCritHit = 1;
-    public int aheadOfSchduleThreshhold = 30;
+    public int aheadOfScheduleThreshhold = 30;
+    
 
     [Header("Current Stats")]
     public float currentCritChance;
@@ -338,13 +339,8 @@ public class UpgradeManager : MonoBehaviour
 
     public int AheadofSchedule()
     {
-        if (
-            aheadOfSchduleThreshhold <
-            timerScript.GetRemainingTime()
-        )
-        {
-            return currentAheadSchedBonus;
-        }
+        if (aheadOfSchduleThreshhold < timerScript.GetRemainingTime())
+        return currentAheadSchedBonus;
         else
         {
             return 0;
@@ -363,4 +359,18 @@ public class UpgradeManager : MonoBehaviour
             ) *
             currentconsistencymultiplier;
     }
+
+public int GetUpgradeLevel(string upgradeName)
+    {
+        foreach (var upgrade in upgrades)
+        {
+            if (upgrade.data.upgradeName == upgradeName)
+            {
+                return upgrade.currentLevel;
+            }
+        }
+
+        return 0;
+    }
+   
 }

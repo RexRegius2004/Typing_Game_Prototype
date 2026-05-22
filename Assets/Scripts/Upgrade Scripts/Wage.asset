@@ -12,7 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2c7ef05ebaed894193212be22c01df1, type: 3}
   m_Name: Wage
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
-  upgradeName: Crit Hit
+  upgradeName: Wage
   maxLevel: 5
   critChance: 0
-  critHit: 10
+  critHit: 0
+  wageMultipler: 50
+  aheadSchedMultiplier: 0
+  delaytacticbonus: 0
+  consistencyBonusMultiplier: 0
