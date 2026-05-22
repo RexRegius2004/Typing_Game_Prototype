@@ -7,6 +7,7 @@ public class DebugTester : MonoBehaviour
     public UpgradeManager UpgradeManager;
     public CurrencySystem currencySystem;
     public TypingController RarityRoll;
+    public MusicManager musicManager;
 
     [Header("Test Upgrades")]
     public UpgradeData[] testUpgrade;
@@ -15,39 +16,45 @@ public class DebugTester : MonoBehaviour
     // ADD UPGRADES
     // =====================================
 
-    [ProButton]
-    void AddWage()
+    
+    public void AddWage()
     {
+        musicManager.PlayButtonClickSFX();
         UpgradeManager.AddUpgrade(testUpgrade[0]);
     }
 
-    [ProButton]
-    void AddCritChance()
+   
+    public void AddCritChance()
     {
+        musicManager.PlayButtonClickSFX();
         UpgradeManager.AddUpgrade(testUpgrade[1]);
     }
 
-    [ProButton]
-    void AddCritHit()
+    
+    public void AddCritHit()
     {
+        musicManager.PlayButtonClickSFX();
         UpgradeManager.AddUpgrade(testUpgrade[2]);
     }
 
-    [ProButton]
-    void AddAheadSchedule()
+   
+    public void AddAheadSchedule()
     {
+        musicManager.PlayButtonClickSFX();
         UpgradeManager.AddUpgrade(testUpgrade[3]);
     }
 
-    [ProButton]
-    void AddDelayTactics()
+   
+    public void AddDelayTactics()
     {
+        musicManager.PlayButtonClickSFX();
         UpgradeManager.AddUpgrade(testUpgrade[4]);
     }
 
-    [ProButton]
-    void AddConsistencyBonus()
+  
+    public void AddConsistencyBonus()
     {
+        musicManager.PlayButtonClickSFX();
         UpgradeManager.AddUpgrade(testUpgrade[5]);
     }
 
@@ -55,9 +62,10 @@ public class DebugTester : MonoBehaviour
     // RESET UPGRADES
     // =====================================
 
-    [ProButton]
-    void ResetUpgrades()
+   
+    public void ResetUpgrades()
     {
+        musicManager.PlayButtonClickSFX();
         UpgradeManager.ResetUpgrades();
     }
 
@@ -65,17 +73,19 @@ public class DebugTester : MonoBehaviour
     // SAVE / LOAD
     // =====================================
 
-    [ProButton]
-    void SaveUpgrades()
+   
+    public void SaveUpgrades()
     {
+        musicManager.PlayButtonClickSFX();
         UpgradeManager.SaveUpgrades();
 
         Debug.Log("Manual Save Complete");
     }
 
-    [ProButton]
-    void LoadUpgrades()
+  
+    public void LoadUpgrades()
     {
+        musicManager.PlayButtonClickSFX();
         UpgradeManager.LoadUpgrades();
 
         Debug.Log("Manual Load Complete");
@@ -85,9 +95,10 @@ public class DebugTester : MonoBehaviour
     // DELETE SAVE
     // =====================================
 
-    [ProButton]
-    void DeleteUpgradeSave()
+   
+    public void DeleteUpgradeSave()
     {
+        musicManager.PlayButtonClickSFX();
         PlayerPrefs.DeleteKey("UPGRADES");
 
         Debug.Log("Upgrade Save Deleted");
@@ -97,9 +108,10 @@ public class DebugTester : MonoBehaviour
     // DELETE ALL PLAYER PREFS
     // =====================================
 
-    [ProButton]
-    void DeleteAllPlayerPrefs()
+    
+    public void DeleteAllPlayerPrefs()
     {
+        musicManager.PlayButtonClickSFX();
         PlayerPrefs.DeleteAll();
 
         Debug.Log("ALL PLAYER PREFS DELETED");
@@ -109,21 +121,24 @@ public class DebugTester : MonoBehaviour
     // MONEY TESTING
     // =====================================
 
-    [ProButton]
-    void AddMoney()
+   
+    public void AddMoney()
     {
+        musicManager.PlayButtonClickSFX();
         currencySystem.AddMoney(50);
     }
 
-    [ProButton]
-    void SubtractMoney()
+   
+    public void SubtractMoney()
     {
+        musicManager.PlayButtonClickSFX();
         currencySystem.SubtractMoney(50);
     }
 
-    [ProButton]
-    void ResetMoney()
+   
+    public void ResetMoney()
     {
+        musicManager.PlayButtonClickSFX();
         currencySystem.ResetMoney();
     }
 
@@ -131,9 +146,10 @@ public class DebugTester : MonoBehaviour
     // DEBUG
     // =====================================
 
-    [ProButton]
-    void PrintUpgradeSave()
+   
+    public void PrintUpgradeSave()
     {
+        musicManager.PlayButtonClickSFX();
         Debug.Log(
             PlayerPrefs.GetString("UPGRADES")
         );

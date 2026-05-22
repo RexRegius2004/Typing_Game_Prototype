@@ -34,6 +34,7 @@ public class TypingController : MonoBehaviour
     public AccuracySystem accuracySystem;
     public RewardsSystem rewardsSystem;
     public UpgradeManager upgradeManager;
+    public MusicManager musicManager;
 
     [Header("Critical Hit")]
     private bool[] criticalLetters;
@@ -103,6 +104,7 @@ public class TypingController : MonoBehaviour
                         );
 
                     currentIndex--;
+                    musicManager.PlayIncorrectKeySFX();
                 }
             }
 
@@ -133,11 +135,14 @@ public class TypingController : MonoBehaviour
                     );
 
                     currentIndex++;
+                    musicManager.PlayCorrectKeySFX();
+                    
                 }
             }
         }
 
         UpdateTextUI();
+        
 
         // FINISH
         if (typedText.Length >= targetText.Length)

@@ -1,3 +1,4 @@
+using System.Data.Common;
 using UnityEngine;
 
 public class Shop_Upgrade : MonoBehaviour
@@ -5,6 +6,7 @@ public class Shop_Upgrade : MonoBehaviour
     public UpgradeManager upgradeManager;
     public CurrencySystem currencySystem;
     public UpgradeData[] upgradeData;
+    public MusicManager musicManager;
     public int[] UpgradeCosts;
 
     public void Awake()
@@ -22,181 +24,114 @@ public class Shop_Upgrade : MonoBehaviour
 
     public void BuyWage()
     {
-        if (currencySystem.Money >= UpgradeCosts[0] && upgradeManager.GetUpgradeLevel("Wage") < 1)
+        int currentLevel = upgradeManager.GetUpgradeLevel("Wage");
+        int cost = currentLevel == 0 
+            ? UpgradeCosts[0] 
+            : UpgradeCosts[0] * (currentLevel + 1) * 2;
+
+        if (currencySystem.Money < cost)
         {
-            currencySystem.Money -= UpgradeCosts[0];
-            upgradeManager.AddUpgrade(upgradeData[0]);
-            Debug.Log(UpgradeCosts[0]); //Base Cost 100
-        }
-         else if (currencySystem.Money >= UpgradeCosts[0] * upgradeManager.GetUpgradeLevel("Wage") * 2
-          && upgradeManager.GetUpgradeLevel("Wage") >= 1)
-          // If player has enough or equal money compared to the Upgrade Cost and the Level is more than 1
-          // then they can buy the upgrade, cost increases with each level
-        {
-            // For levels above 1, cost doubles
-             upgradeManager.AddUpgrade(upgradeData[0]);
-             currencySystem.Money -= (UpgradeCosts[0] * upgradeManager.GetUpgradeLevel("Wage")) * 2; // Increase cost for next level
-             //Base cost * current level * 2 (for doubling) = new cost
-             // 100 * 2 (for level 2) * 2 (for doubling) = 400 
-             // 100 * 3 (for level 3) * 2 (for doubling) = 600 
-             // 100 * 4 (for level 4) * 2 (for doubling) = 800 
-             // 100 * 5 (for level 5) * 2 (for doubling) = 1000
-             Debug.Log(UpgradeCosts[0] * upgradeManager.GetUpgradeLevel("Wage") * 2);
-        }
-         else if (upgradeManager.GetUpgradeLevel("Wage") == 5)
-        {
-            //Nothing will happen, max level reached
+            return; // Not enough money
         }
 
-       
+        musicManager.PlayButtonClickSFX();
+        currencySystem.Money -= cost;
+        upgradeManager.AddUpgrade(upgradeData[0]);
+        Debug.Log(cost);
     }
 
     public void BuyCritChance()
     {
-       
-        if (currencySystem.Money >= UpgradeCosts[1] && upgradeManager.GetUpgradeLevel("Critical Chance") < 1)
+        int currentLevel = upgradeManager.GetUpgradeLevel("Critical Chance");
+        int cost = currentLevel == 0 
+            ? UpgradeCosts[1] 
+            : UpgradeCosts[1] * (currentLevel + 1) * 2;
+
+        if (currencySystem.Money < cost)
         {
-            currencySystem.Money -= UpgradeCosts[1];
-            upgradeManager.AddUpgrade(upgradeData[1]);
-            Debug.Log(UpgradeCosts[1]); //Base Cost 100
-        }
-         else if (currencySystem.Money >= UpgradeCosts[1] * upgradeManager.GetUpgradeLevel("Critical Chance") * 2
-          && upgradeManager.GetUpgradeLevel("Critical Chance") >= 1)
-          // If player has enough or equal money compared to the Upgrade Cost and the Level is more than 1
-          // then they can buy the upgrade, cost increases with each level
-        {
-            // For levels above 1, cost doubles
-             upgradeManager.AddUpgrade(upgradeData[1]);
-             currencySystem.Money -= (UpgradeCosts[1] * upgradeManager.GetUpgradeLevel("Critical Chance")) * 2; // Increase cost for next level
-             //Base cost * current level * 2 (for doubling) = new cost
-             // 100 * 2 (for level 2) * 2 (for doubling) = 400 
-             // 100 * 3 (for level 3) * 2 (for doubling) = 600 
-             // 100 * 4 (for level 4) * 2 (for doubling) = 800 
-             // 100 * 5 (for level 5) * 2 (for doubling) = 1000
-             Debug.Log(UpgradeCosts[1] * upgradeManager.GetUpgradeLevel("Critical Chance") * 2);
-        }
-         else if (upgradeManager.GetUpgradeLevel("Critical Chance") == 5)
-        {
-            //Nothing will happen, max level reached
+            return; // Not enough money
         }
 
+        musicManager.PlayButtonClickSFX();
+        currencySystem.Money -= cost;
+        upgradeManager.AddUpgrade(upgradeData[1]);
+        Debug.Log(cost);
 
     }   
 
     public void BuyCritHit()
     {
-        if (currencySystem.Money >= UpgradeCosts[2] && upgradeManager.GetUpgradeLevel("Critical Hit") < 1)
-        {
-            currencySystem.Money -= UpgradeCosts[2];
-            upgradeManager.AddUpgrade(upgradeData[2]);
-            Debug.Log(UpgradeCosts[2]); //Base Cost 100
-        }
-         else if (currencySystem.Money >= UpgradeCosts[2] * upgradeManager.GetUpgradeLevel("Critical Hit") * 2
-          && upgradeManager.GetUpgradeLevel("Critical Hit") >= 1)
-          // If player has enough or equal money compared to the Upgrade Cost and the Level is more than 1
-          // then they can buy the upgrade, cost increases with each level
-        {
-            // For levels above 1, cost doubles
-             upgradeManager.AddUpgrade(upgradeData[2]);
-             currencySystem.Money -= (UpgradeCosts[2] * upgradeManager.GetUpgradeLevel("Critical Hit")) * 2; // Increase cost for next level
-             //Base cost * current level * 2 (for doubling) = new cost
-             // 100 * 2 (for level 2) * 2 (for doubling) = 400 
-             // 100 * 3 (for level 3) * 2 (for doubling) = 600 
-             // 100 * 4 (for level 4) * 2 (for doubling) = 800 
-             // 100 * 5 (for level 5) * 2 (for doubling) = 1000
-             Debug.Log(UpgradeCosts[2] * upgradeManager.GetUpgradeLevel("Critical Hit") * 2);
-        }
-         else if (upgradeManager.GetUpgradeLevel("Critical Hit") == 5)
-        {
-            //Nothing will happen, max level reached
-        }
+        int currentLevel = upgradeManager.GetUpgradeLevel("Critical Hit");
+        int cost = currentLevel == 0 
+            ? UpgradeCosts[2] 
+            : UpgradeCosts[2] * (currentLevel + 1) * 2;
+        if (currencySystem.Money < cost)      
+          {
+            return; // Not enough money
+          }
+
+        musicManager.PlayButtonClickSFX();
+        currencySystem.Money -= cost;
+        upgradeManager.AddUpgrade(upgradeData[2]);
+        Debug.Log(cost);
+       
     }
 
     public void BuyAheadSchedule()
     {
-       if (currencySystem.Money >= UpgradeCosts[3] && upgradeManager.GetUpgradeLevel("Ahead Schedule") < 1)
+        int currentLevel = upgradeManager.GetUpgradeLevel("Ahead of Schedule");
+        int cost = currentLevel == 0
+            ? UpgradeCosts[3]
+            : UpgradeCosts[3] * (currentLevel + 1) * 2;
+        if (currencySystem.Money < cost)
         {
-            currencySystem.Money -= UpgradeCosts[3];
-            upgradeManager.AddUpgrade(upgradeData[3]);
-            Debug.Log(UpgradeCosts[3]); //Base Cost 100
+            return; // Not enough money
         }
-         else if (currencySystem.Money >= UpgradeCosts[3] * upgradeManager.GetUpgradeLevel("Ahead Schedule") * 2
-          && upgradeManager.GetUpgradeLevel("Ahead Schedule") >= 1)
-          // If player has enough or equal money compared to the Upgrade Cost and the Level is more than 1
-          // then they can buy the upgrade, cost increases with each level
-        {
-            // For levels above 1, cost doubles
-             upgradeManager.AddUpgrade(upgradeData[3]);
-             currencySystem.Money -= (UpgradeCosts[3] * upgradeManager.GetUpgradeLevel("Ahead Schedule")) * 2; // Increase cost for next level
-             //Base cost * current level * 2 (for doubling) = new cost
-             // 100 * 2 (for level 2) * 2 (for doubling) = 400 
-             // 100 * 3 (for level 3) * 2 (for doubling) = 600 
-             // 100 * 4 (for level 4) * 2 (for doubling) = 800 
-             // 100 * 5 (for level 5) * 2 (for doubling) = 1000
-             Debug.Log(UpgradeCosts[3] * upgradeManager.GetUpgradeLevel("Ahead Schedule") * 2);
-        }
-         else if (upgradeManager.GetUpgradeLevel("Ahead Schedule") == 5)
-        {
-            //Nothing will happen, max level reached
-        }
+
+        musicManager.PlayButtonClickSFX();
+        currencySystem.Money -= cost;
+        upgradeManager.AddUpgrade(upgradeData[3]);
+        Debug.Log(cost);
+
+
+
+
+
+      
     }
 
     public void BuyDelayTactics()
     {
-        if (currencySystem.Money >= UpgradeCosts[4] && upgradeManager.GetUpgradeLevel("Delay Tactics") < 1)
+        int currentLevel = upgradeManager.GetUpgradeLevel("Delay Tactics");
+        int cost = currentLevel == 0
+            ? UpgradeCosts[4]
+            : UpgradeCosts[4] * (currentLevel + 1) * 2;
+        if (currencySystem.Money < cost)
         {
-            currencySystem.Money -= UpgradeCosts[4];
-            upgradeManager.AddUpgrade(upgradeData[4]);
-            Debug.Log(UpgradeCosts[4]); //Base Cost 100
+            return; // Not enough money
         }
-         else if (currencySystem.Money >= UpgradeCosts[4] * upgradeManager.GetUpgradeLevel("Delay Tactics") * 2
-          && upgradeManager.GetUpgradeLevel("Delay Tactics") >= 1)
-          // If player has enough or equal money compared to the Upgrade Cost and the Level is more than 1
-          // then they can buy the upgrade, cost increases with each level
-        {
-            // For levels above 1, cost doubles
-             upgradeManager.AddUpgrade(upgradeData[4]);
-             currencySystem.Money -= (UpgradeCosts[4] * upgradeManager.GetUpgradeLevel("Delay Tactics")) * 2; // Increase cost for next level
-             //Base cost * current level * 2 (for doubling) = new cost
-             // 100 * 2 (for level 2) * 2 (for doubling) = 400 
-             // 100 * 3 (for level 3) * 2 (for doubling) = 600 
-             // 100 * 4 (for level 4) * 2 (for doubling) = 800 
-             // 100 * 5 (for level 5) * 2 (for doubling) = 1000
-             Debug.Log(UpgradeCosts[4] * upgradeManager.GetUpgradeLevel("Delay Tactics") * 2);
-        }
-         else if (upgradeManager.GetUpgradeLevel("Delay Tactics") == 5)
-        {
-            //Nothing will happen, max level reached
-        }
+
+        musicManager.PlayButtonClickSFX();
+        currencySystem.Money -= cost;
+        upgradeManager.AddUpgrade(upgradeData[4]);
+        Debug.Log(cost);
     }
 
     public void BuyConsistencyBonus()
     {
-       if (currencySystem.Money >= UpgradeCosts[5] && upgradeManager.GetUpgradeLevel("Consistency Bonus") < 1)
+        int currentLevel = upgradeManager.GetUpgradeLevel("Consistency Bonus");
+        int cost = currentLevel == 0
+            ? UpgradeCosts[5]
+            : UpgradeCosts[5] * (currentLevel + 1) * 2;
+        if (currencySystem.Money < cost)
         {
-            currencySystem.Money -= UpgradeCosts[5];
-            upgradeManager.AddUpgrade(upgradeData[5]);
-            Debug.Log(UpgradeCosts[5]); //Base Cost 100
+            return; // Not enough money
         }
-         else if (currencySystem.Money >= UpgradeCosts[5] * upgradeManager.GetUpgradeLevel("Consistency Bonus") * 2
-          && upgradeManager.GetUpgradeLevel("Consistency Bonus") >= 1)
-          // If player has enough or equal money compared to the Upgrade Cost and the Level is more than 1
-          // then they can buy the upgrade, cost increases with each level
-        {
-            // For levels above 1, cost doubles
-             upgradeManager.AddUpgrade(upgradeData[5]);
-             currencySystem.Money -= (UpgradeCosts[5] * upgradeManager.GetUpgradeLevel("Consistency Bonus")) * 2; // Increase cost for next level
-             //Base cost * current level * 2 (for doubling) = new cost
-             // 100 * 2 (for level 2) * 2 (for doubling) = 400 
-             // 100 * 3 (for level 3) * 2 (for doubling) = 600 
-             // 100 * 4 (for level 4) * 2 (for doubling) = 800 
-             // 100 * 5 (for level 5) * 2 (for doubling) = 1000
-             Debug.Log(UpgradeCosts[5] * upgradeManager.GetUpgradeLevel("Consistency Bonus") * 2);
-        }
-         else if (upgradeManager.GetUpgradeLevel("Consistency Bonus") == 5)
-        {
-            //Nothing will happen, max level reached
-        }
+
+        musicManager.PlayButtonClickSFX();
+        currencySystem.Money -= cost;
+        upgradeManager.AddUpgrade(upgradeData[5]);
+        Debug.Log(cost);
     }
 
 }

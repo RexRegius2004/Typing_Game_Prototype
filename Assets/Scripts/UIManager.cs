@@ -7,10 +7,13 @@ public class UIManager : MonoBehaviour
     [Header("UI Settings")]
     public GameObject gameOverUI;
     public GameObject UpgradePanel;
+    public GameObject DebugPanel;
     public TextMeshProUGUI gameOverTextUI;
     public TextMeshProUGUI upgradesTextUI;
     public TextMeshProUGUI currencyTextUI;
     public TextMeshProUGUI P_RarityTextUI;
+
+
     
 
     public CurrencySystem currencySystem;
@@ -19,6 +22,7 @@ public class UIManager : MonoBehaviour
     public TypingController P_rarity;
     public TextMeshProUGUI breakdownTextUI;
     public RewardsSystem rewardsSystem;
+    public MusicManager musicManager;
   
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -26,6 +30,7 @@ public class UIManager : MonoBehaviour
     {
         gameOverUI.SetActive(false);
         UpgradePanel.SetActive(false);
+        DebugPanel.SetActive(false);
     }
 
     // Update is called once per frame
@@ -78,11 +83,23 @@ public class UIManager : MonoBehaviour
     {
         if (UpgradePanel != null)
         {
+            musicManager.PlayButtonClickSFX();
             UpgradePanel.SetActive(!UpgradePanel.activeSelf); 
             Time.timeScale = UpgradePanel.activeSelf ? 0 : 1; 
             // Pause game when panel is open and resume when closed
         }
 
+    }
+
+    public void OpenDebugPanel()
+    {
+        if (DebugPanel != null)
+        {
+            musicManager.PlayButtonClickSFX();
+            DebugPanel.SetActive(!DebugPanel.activeSelf);
+            Time.timeScale = DebugPanel.activeSelf ? 0 : 1; 
+             // Pause game when panel is open and resume when closed
+        }
     }
 
 
