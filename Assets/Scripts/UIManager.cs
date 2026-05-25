@@ -54,10 +54,17 @@ public class UIManager : MonoBehaviour
 
     public void UpdateUpgradeUI()
     {
+        if (UpgradeManager == null || UpgradeManager.upgrades == null) return;
+
+        StringBuilder sb = new StringBuilder();
+        sb.AppendLine("Upgrades:");
+
         foreach (var upgrade in UpgradeManager.upgrades)
         {
-            upgradesTextUI.text = $"Upgrades: \n {upgrade.data.upgradeName} Lv.{upgrade.currentLevel}/{upgrade.data.maxLevel}\n";
+            sb.AppendLine($"{upgrade.data.upgradeName} Lv.{upgrade.currentLevel}/{upgrade.data.maxLevel}\n");
         }
+
+        upgradesTextUI.text = sb.ToString();
 
     }
 
