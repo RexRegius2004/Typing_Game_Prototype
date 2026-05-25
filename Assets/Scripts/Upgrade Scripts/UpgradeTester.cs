@@ -21,6 +21,7 @@ public class DebugTester : MonoBehaviour
     {
         musicManager.PlayButtonClickSFX();
         UpgradeManager.AddUpgrade(testUpgrade[0]);
+        UpgradeManager.RecalculateStats();
     }
 
    
@@ -28,41 +29,46 @@ public class DebugTester : MonoBehaviour
     {
         musicManager.PlayButtonClickSFX();
         UpgradeManager.AddUpgrade(testUpgrade[1]);
+        UpgradeManager.RecalculateStats();
     }
 
-    
+
     public void AddCritHit()
     {
         musicManager.PlayButtonClickSFX();
         UpgradeManager.AddUpgrade(testUpgrade[2]);
+        UpgradeManager.RecalculateStats();
     }
 
-   
+
     public void AddAheadSchedule()
     {
         musicManager.PlayButtonClickSFX();
         UpgradeManager.AddUpgrade(testUpgrade[3]);
+        UpgradeManager.RecalculateStats();
     }
 
-   
+
     public void AddDelayTactics()
     {
         musicManager.PlayButtonClickSFX();
         UpgradeManager.AddUpgrade(testUpgrade[4]);
+        UpgradeManager.RecalculateStats();
     }
 
-  
+
     public void AddConsistencyBonus()
     {
         musicManager.PlayButtonClickSFX();
         UpgradeManager.AddUpgrade(testUpgrade[5]);
+        UpgradeManager.RecalculateStats();
     }
 
     // =====================================
     // RESET UPGRADES
     // =====================================
 
-   
+
     public void ResetUpgrades()
     {
         musicManager.PlayButtonClickSFX();
