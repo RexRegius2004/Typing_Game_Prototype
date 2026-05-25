@@ -29,6 +29,7 @@ public class TimerScript : MonoBehaviour
         if (!isRunning) return;
 
         currentTime -= Time.deltaTime;
+        Debug.Log("Timer started with " + currentTime + " seconds.");
 
         if (currentTime <= 0)
         {

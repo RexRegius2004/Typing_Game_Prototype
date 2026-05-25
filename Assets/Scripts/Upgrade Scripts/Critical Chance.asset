@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Critical Chance
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
   upgradeName: Critical Chance
-  maxLevel: 5
-  critChance: 10
+  critChance: 0.01
   critHit: 0
   wageMultipler: 0
   aheadSchedMultiplier: 0

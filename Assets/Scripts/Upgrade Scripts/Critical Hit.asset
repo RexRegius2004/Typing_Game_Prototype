@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: Critical Hit
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
   upgradeName: Critical Hit
-  maxLevel: 5
   critChance: 0
-  critHit: 0.1
+  critHit: 0.2
   wageMultipler: 0
   aheadSchedMultiplier: 0
   delaytacticbonus: 0

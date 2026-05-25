@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: Delay Tactics
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
   upgradeName: Delay Tactics
-  maxLevel: 5
   critChance: 0
   critHit: 0
   wageMultipler: 0
   aheadSchedMultiplier: 0
-  delaytacticbonus: 0
+  delaytacticbonus: 30
   consistencyBonusMultiplier: 0

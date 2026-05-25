@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: Wage
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
   upgradeName: Wage
-  maxLevel: 5
   critChance: 0
   critHit: 0
-  wageMultipler: 50
+  wageBonus: 100
   aheadSchedMultiplier: 0
   delaytacticbonus: 0
   consistencyBonusMultiplier: 0

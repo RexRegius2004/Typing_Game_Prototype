@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: Ahead of Schedule
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
   upgradeName: Ahead of Schedule
-  maxLevel: 5
   critChance: 0
   critHit: 0
   wageMultipler: 0
-  aheadSchedMultiplier: 0
+  aheadSchedMultiplier: 0.5
   delaytacticbonus: 0
   consistencyBonusMultiplier: 0

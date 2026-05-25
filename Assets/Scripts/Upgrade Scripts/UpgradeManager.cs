@@ -29,9 +29,9 @@ public class UpgradeManager : MonoBehaviour
     public List<UpgradeInstance> upgrades =
         new List<UpgradeInstance>();
 
-    void Start()
+void Awake()
     {
-        LoadUpgrades();
+       LoadUpgrades();  
     }
 
     // =====================================
@@ -49,19 +49,7 @@ public class UpgradeManager : MonoBehaviour
 
         if (existing != null)
         {
-            if (!existing.IsMaxLevel())
-            {
                 existing.LevelUp();
-            }
-            else
-            {
-                Debug.Log(
-                    upgradeData.upgradeName +
-                    " is already MAX level!"
-                );
-
-                return;
-            }
         }
         else
         {
@@ -356,7 +344,7 @@ public class UpgradeManager : MonoBehaviour
         float value = PlayerPrefs.GetInt("WinStreak");
         if (HasUpgrade("ConsistencyBonus") && value > 0)
         return value * currentconsistencymultiplier;
-        else;
+        else
         return 1;
     }
 

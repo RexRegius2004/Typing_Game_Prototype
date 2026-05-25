@@ -1,5 +1,6 @@
 using System.Data.Common;
 using UnityEngine;
+using TMPro;
 
 public class Shop_Upgrade : MonoBehaviour
 {
@@ -8,6 +9,13 @@ public class Shop_Upgrade : MonoBehaviour
     public UpgradeData[] upgradeData;
     public MusicManager musicManager;
     public int[] UpgradeCosts;
+
+   public TextMeshProUGUI wageCostText;
+    public TextMeshProUGUI critChanceCostText;
+    public TextMeshProUGUI critHitCostText;
+    public TextMeshProUGUI aheadScheduleCostText;
+    public TextMeshProUGUI delayTacticsCostText;
+    public TextMeshProUGUI consistencyBonusCostText;
 
     public void Awake()
     {
@@ -22,16 +30,27 @@ public class Shop_Upgrade : MonoBehaviour
         }
     }
 
+void Start()
+    {
+        wageCostText.text = UpgradeCosts[0].ToString() + " $";
+        critChanceCostText.text = UpgradeCosts[1].ToString() + " $";
+        critHitCostText.text = UpgradeCosts[2].ToString() + " $";
+        aheadScheduleCostText.text = UpgradeCosts[3].ToString() + " $";
+        delayTacticsCostText.text = UpgradeCosts[4].ToString() + " $";
+        consistencyBonusCostText.text = UpgradeCosts[5].ToString() + " $";
+
+    }
     public void BuyWage()
     {
         int currentLevel = upgradeManager.GetUpgradeLevel("Wage");
         int cost = currentLevel == 0 
             ? UpgradeCosts[0] 
             : UpgradeCosts[0] * (currentLevel + 1) * 2;
-
+        wageCostText.text = cost.ToString() + " $";
         if (currencySystem.Money < cost)
         {
             return; // Not enough money
+            //Open Panel to inform player they don't have enough money
         }
 
         musicManager.PlayButtonClickSFX();
@@ -46,7 +65,7 @@ public class Shop_Upgrade : MonoBehaviour
         int cost = currentLevel == 0 
             ? UpgradeCosts[1] 
             : UpgradeCosts[1] * (currentLevel + 1) * 2;
-
+        critChanceCostText.text = cost.ToString() + " $";
         if (currencySystem.Money < cost)
         {
             return; // Not enough money
@@ -65,6 +84,7 @@ public class Shop_Upgrade : MonoBehaviour
         int cost = currentLevel == 0 
             ? UpgradeCosts[2] 
             : UpgradeCosts[2] * (currentLevel + 1) * 2;
+        critHitCostText.text = cost.ToString() + " $";
         if (currencySystem.Money < cost)      
           {
             return; // Not enough money
@@ -83,6 +103,7 @@ public class Shop_Upgrade : MonoBehaviour
         int cost = currentLevel == 0
             ? UpgradeCosts[3]
             : UpgradeCosts[3] * (currentLevel + 1) * 2;
+        aheadScheduleCostText.text = cost.ToString() + " $";
         if (currencySystem.Money < cost)
         {
             return; // Not enough money
@@ -106,6 +127,7 @@ public class Shop_Upgrade : MonoBehaviour
         int cost = currentLevel == 0
             ? UpgradeCosts[4]
             : UpgradeCosts[4] * (currentLevel + 1) * 2;
+        delayTacticsCostText.text = cost.ToString() + " $";
         if (currencySystem.Money < cost)
         {
             return; // Not enough money
@@ -123,6 +145,7 @@ public class Shop_Upgrade : MonoBehaviour
         int cost = currentLevel == 0
             ? UpgradeCosts[5]
             : UpgradeCosts[5] * (currentLevel + 1) * 2;
+        consistencyBonusCostText.text = cost.ToString() + " $";
         if (currencySystem.Money < cost)
         {
             return; // Not enough money

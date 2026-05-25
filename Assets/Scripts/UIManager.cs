@@ -61,7 +61,7 @@ public class UIManager : MonoBehaviour
 
         foreach (var upgrade in UpgradeManager.upgrades)
         {
-            sb.AppendLine($"{upgrade.data.upgradeName} Lv.{upgrade.currentLevel}/{upgrade.data.maxLevel}\n");
+            sb.AppendLine($"{upgrade.data.upgradeName} Lv.{upgrade.currentLevel}\n");
         }
 
         upgradesTextUI.text = sb.ToString();

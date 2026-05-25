@@ -11,22 +11,14 @@ public class UpgradeInstance
         currentLevel = 1;
     }
 
-     public bool IsMaxLevel()
-    {
-        return currentLevel >= data.maxLevel;
-    }
-
     public void LevelUp()
     {
-        if (currentLevel < data.maxLevel)
-        {
             currentLevel++;
-        }
     }
 
     public string GetLevelText()
     {
-        return "Lv. " + currentLevel + "/" + data.maxLevel;
+        return "Lv. " + currentLevel;
     }
 
     public float GetCritChance()
@@ -41,7 +33,7 @@ public class UpgradeInstance
 
     public int GetWageBonus()
     {
-        return Mathf.FloorToInt(data.wageMultipler * currentLevel);
+        return data.wageBonus * currentLevel;
     }
     
     public int GetAheadSchedBonus()
