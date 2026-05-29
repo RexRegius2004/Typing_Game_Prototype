@@ -25,24 +25,32 @@ public class TimerScript : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+{
+    // ONLY RUN TIMER
+    // DURING LONG PROMPTS
+
+    if (
+        !isRunning
+    )
+        return;
+
+    currentTime -= Time.deltaTime;
+
+    if (currentTime <= 0)
     {
-        if (!isRunning) return;
+        currentTime = 0;
 
-        currentTime -= Time.deltaTime;
-        Debug.Log("Timer started with " + currentTime + " seconds.");
-
-        if (currentTime <= 0)
-        {
-            currentTime = 0;
-            isRunning = false;
-
-            UpdateTimerUI();
-            OnTimerEnd?.Invoke(); // Notify listeners
-            return;
-        }
+        isRunning = false;
 
         UpdateTimerUI();
+
+        OnTimerEnd?.Invoke();
+
+        return;
     }
+
+    UpdateTimerUI();
+}
     void UpdateTimerUI()
     {
         int minutes = Mathf.FloorToInt(currentTime / 60);
@@ -65,4 +73,13 @@ public class TimerScript : MonoBehaviour
         return currentTime;
     }
 
+public void StartTimer()
+{
+    currentTime =
+        timelimit +
+        upgradeManager.currentDelayBonus;
+
+    isRunning = true;
+    UpdateTimerUI();
+}
 }

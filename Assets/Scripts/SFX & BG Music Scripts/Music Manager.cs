@@ -18,6 +18,11 @@ public class MusicManager : MonoBehaviour
     public AudioClip incorrectKeySFX;
     public AudioClip MainmenuMusic;
     public AudioClip gameplayMusic;
+    public AudioClip[] FinishedWordSFX;
+
+[Header("Pitch")]
+public float NormalPitch = 1f;
+
 
     void Start()
     {
@@ -58,10 +63,17 @@ public class MusicManager : MonoBehaviour
     public void PlayCorrectKeySFX()
     {
         sfxSource.PlayOneShot(correctKeySFX);
+        
     }
 
     public void PlayIncorrectKeySFX()
     {
         sfxSource.PlayOneShot(incorrectKeySFX);
+    }
+
+    public void FinishedWord()
+    {
+        sfxSource.PlayOneShot(FinishedWordSFX[Random.Range(0, FinishedWordSFX.Length)]);
+        sfxSource.pitch = NormalPitch;
     }
 }

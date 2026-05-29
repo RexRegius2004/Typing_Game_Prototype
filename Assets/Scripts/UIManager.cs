@@ -23,6 +23,8 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI breakdownTextUI;
     public RewardsSystem rewardsSystem;
     public MusicManager musicManager;
+    public GameObject longPromptChoiceUI;
+    public TypingController typingController;
   
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -69,9 +71,16 @@ public class UIManager : MonoBehaviour
     }
 
     public void BreakdownResultsUI()
-    {
-        breakdownTextUI.text = $"REWARD BREAKDOWN \n Words Typed: {rewardsSystem.wordsTyped} \n Accuracy: {rewardsSystem.accuracy}% \n Remaining Time: {rewardsSystem.remainingTime} \n Difficulty Multiplier: {rewardsSystem.difficultyMultiplier} \n Reward: {rewardsSystem.finalMoney} \n CritMoney: {rewardsSystem.criticalMoney}";
-    }
+{
+    breakdownTextUI.text =
+        $"REWARD BREAKDOWN\n" +
+        $"Words Typed: {rewardsSystem.lastWordsTyped}\n" +
+        $"Accuracy: {rewardsSystem.lastAccuracy}%\n" +
+        $"Remaining Time: {rewardsSystem.lastRemainingTime}\n" +
+        $"Difficulty Multiplier: {rewardsSystem.lastDifficultyMultiplier}\n" +
+        $"Reward: {rewardsSystem.finalMoney}\n" +
+        $"CritMoney: {rewardsSystem.criticalMoney}";
+}
 
     public void UpdateCurrencyUI()
     {
@@ -109,6 +118,30 @@ public class UIManager : MonoBehaviour
         }
     }
 
+ public void AcceptLongPrompt()
+{
+    typingController.pendingLongPrompt = false;
 
+    if (longPromptChoiceUI != null)
+        longPromptChoiceUI.SetActive(false);
+
+    typingController.ResetLongPromptOfferTimer();
+    typingController.StartLongPromptMode();
+
+    typingController.isGameActive = true;
+}
+
+public void DeclineLongPrompt()
+{
+    typingController.pendingLongPrompt = false;
+
+    if (longPromptChoiceUI != null)
+        longPromptChoiceUI.SetActive(false);
+
+    typingController.ResetLongPromptOfferTimer();
+    typingController.isGameActive = true;
+
+    typingController.GenerateRandomWord();
+}
     
 }

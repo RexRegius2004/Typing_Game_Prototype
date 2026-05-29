@@ -1,24 +1,20 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class RewardsSystem : MonoBehaviour
 {
-      [Header("References")]
-    public TypingController typingController;
-    public AccuracySystem accuracySystem;
-    public TimerScript timerScript;
+    [Header("References")]
     public CurrencySystem currencySystem;
     public UpgradeManager upgradeManager;
 
-    [Header("Reward Settings")]
+    [Header("Quick Word Rewards")]
+    public int minimumQuickReward = 1;
 
-    [Tooltip("Flat reward added every game")]
+    [Tooltip("Money per character")]
+    public float letterValue = 1f;
+
+    [Header("Long Prompt Rewards")]
     public int baseReward = 10;
-
-    [Tooltip("Reward per correctly typed word")]
     public float wordValue = 0.5f;
-
-    [Tooltip("Reward per second remaining")]
     public float speedValue = 0.25f;
 
     [Header("Difficulty Multipliers")]
@@ -30,81 +26,227 @@ public class RewardsSystem : MonoBehaviour
 
     [Header("Results")]
     public int finalMoney;
-    public int wordsTyped;
-    public int correctCharacters;
-    public float accuracy;
-    public float remainingTime;
     public float difficultyMultiplier;
 
-    [Header("Critical Hits")]
+    [Header("Critical Rewards")]
     public int criticalMoney;
+    internal object wordsTyped;
 
-    private int bonusTotal;
-    public void AddCriticalReward(int amount)
+// =====================================
+// LAST RUN RESULTS (UI SAFE)
+// =====================================
+
+[Header("Last Run Results (UI)")]
+public int lastWordsTyped;
+public float lastAccuracy;
+public float lastRemainingTime;
+public float lastDifficultyMultiplier;
+    // =====================================
+    // QUICK WORD REWARD
+    // =====================================
+
+    public bool RollCritLetter()
     {
-        criticalMoney += amount;
+        if (
+            upgradeManager == null ||
+            upgradeManager.currentCritChance <= 0f
+        )
+            return false;
+
+        return Random.value <=
+            upgradeManager.currentCritChance;
     }
-    public void CalculateRewards()
+
+    public int CalculateQuickReward(
+        string completedWord,
+        string typed,
+        float accuracy,
+        bool[] critLetters
+    )
     {
-        // GET VALUES
-        accuracy = accuracySystem.finalAccuracy;
-        remainingTime = timerScript.GetRemainingTime();
+        // ---------------------------------
+        // BASE REWARD (per letter, crit letters pay more)
+        // ---------------------------------
 
-        // Count words from target text
-        wordsTyped = CountWords(typingController.targetText);
+        float reward = 0f;
+        criticalMoney = 0;
+        float critMultiplier =
+            upgradeManager.GetCritMultiplier();
+        float accuracyScale = accuracy / 100f;
 
-        // Count correctly typed characters
-        correctCharacters = Mathf.RoundToInt(
-            typingController.targetText.Length * (accuracy / 100f)
-        );
+        for (int i = 0; i < completedWord.Length; i++)
+        {
+            float letterReward = letterValue;
 
-        // DIFFICULTY MULTIPLIER
-        difficultyMultiplier = GetDifficultyMultiplier(
-            typingController.currentPromptRarity
-        );
+            bool isCritLetter =
+                critLetters != null &&
+                i < critLetters.Length &&
+                critLetters[i];
 
-        // SCORE COMPONENTS
-        float wordReward =
-            wordsTyped * wordValue;
+            bool typedCorrect =
+                typed != null &&
+                i < typed.Length &&
+                typed[i] == completedWord[i];
 
-        float speedBonus =
-            remainingTime * speedValue;
+            if (isCritLetter && typedCorrect)
+            {
+                float critBonus =
+                    letterReward *
+                    (critMultiplier - 1f);
+
+                letterReward += critBonus;
+                criticalMoney +=
+                    Mathf.RoundToInt(
+                        critBonus * accuracyScale
+                    );
+            }
+
+            reward += letterReward;
+        }
+
+        // ---------------------------------
+        // ACCURACY MULTIPLIER
+        // ---------------------------------
+
+        reward *= accuracyScale;
+
+        // ---------------------------------
+        // WAGE BONUS
+        // ---------------------------------
+
+        reward +=
+            upgradeManager.currentWageBonus;
+
+        if (criticalMoney > 0)
+        {
+            Debug.Log(
+                "CRITICAL LETTERS! +" +
+                criticalMoney
+            );
+        }
+
+        // ---------------------------------
+        // CONSISTENCY BONUS
+        // ---------------------------------
+
+        reward *=
+            upgradeManager.ConsistencyBonus();
+
+        // ---------------------------------
+        // MINIMUM REWARD
+        // ---------------------------------
+
+        int finalReward =
+            Mathf.Max(
+                minimumQuickReward,
+                Mathf.RoundToInt(reward)
+            );
+
+        // ---------------------------------
+        // GIVE MONEY
+        // ---------------------------------
+
+        currencySystem.AddMoney(finalReward);
+
+        return finalReward;
+    }
+
+    // =====================================
+    // LONG PROMPT REWARD
+    // =====================================
+
+    public void CalculateLongPromptReward(
+        TypingController typingController,
+        AccuracySystem accuracySystem,
+        TimerScript timerScript
+        
+        
+    )
+    {
+        
+        float accuracy =
+            accuracySystem.finalAccuracy;
+
+        float remainingTime =
+            timerScript.GetRemainingTime();
+
+        int wordsTyped =
+            CountWords(
+                typingController.targetText
+            );
+
+        difficultyMultiplier =
+            GetDifficultyMultiplier(
+                typingController.currentPromptRarity
+            );
 
         float subtotal =
-            baseReward +
-            wordReward +
-            speedBonus;
+            baseReward;
 
-    
-        // ACCURACY MULTIPLIER
-        subtotal *= (accuracy / 100f);
+        subtotal +=
+            wordsTyped * wordValue;
 
-        // FINAL MULTIPLIER
-        subtotal *= difficultyMultiplier;
+        subtotal +=
+            remainingTime * speedValue;
 
-        bonusTotal = upgradeManager.currentWageBonus + upgradeManager.AheadofSchedule();
-        // FINAL REWARD
-        finalMoney = Mathf.FloorToInt(subtotal * upgradeManager.ConsistencyBonus()) + criticalMoney + bonusTotal;
-        
-        // MINIMUM REWARD
-        finalMoney = Mathf.Max(finalMoney, 10);
+        // ACCURACY
+        subtotal *=
+            (accuracy / 100f);
 
-        
+        // DIFFICULTY
+        subtotal *=
+            difficultyMultiplier;
+
+        // UPGRADES
+        subtotal +=
+            upgradeManager.currentWageBonus;
+
+        subtotal +=
+            upgradeManager.AheadofSchedule();
+
+        subtotal *=
+            upgradeManager.ConsistencyBonus();
+
+        lastWordsTyped = wordsTyped;
+        lastAccuracy = accuracy;
+        lastRemainingTime = remainingTime;
+        lastDifficultyMultiplier = difficultyMultiplier;
+        // FINAL
+        finalMoney =
+            Mathf.RoundToInt(subtotal);
+
+        finalMoney += criticalMoney;
+
+        finalMoney =
+            Mathf.Max(finalMoney, 10);
+
         currencySystem.AddMoney(finalMoney);
 
+        Debug.Log(
+            "LONG PROMPT PAYOUT: " +
+            finalMoney
+        );
     }
+
+    // =====================================
+    // COUNT WORDS
+    // =====================================
 
     int CountWords(string text)
     {
         if (string.IsNullOrWhiteSpace(text))
             return 0;
 
-        string[] words = text.Split(' ');
-
-        return words.Length;
+        return text.Split(' ').Length;
     }
 
-    float GetDifficultyMultiplier(string rarity)
+    // =====================================
+    // DIFFICULTY MULTIPLIER
+    // =====================================
+
+    float GetDifficultyMultiplier(
+        string rarity
+    )
     {
         switch (rarity)
         {

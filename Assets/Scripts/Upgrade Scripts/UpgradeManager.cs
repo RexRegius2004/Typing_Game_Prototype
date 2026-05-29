@@ -76,8 +76,8 @@ void Awake()
         currentCritChance =
             baseCritChance;
 
-        currentCritHit =
-            baseCritHit;
+        // Bonus damage on crit (multiplier = 1 + this value)
+        currentCritHit = 0;
 
         currentWageBonus = 0;
         currentAheadSchedBonus = 0;
@@ -129,11 +129,22 @@ void Awake()
         }
 
         Debug.Log(
-            "CritHit: " +
+            "CritDamageBonus: " +
             currentCritHit +
             " | CritChance: " +
             currentCritChance
         );
+    }
+
+    public float GetCritMultiplier()
+    {
+        float multiplier = 1f + currentCritHit;
+
+        // Crit chance with no crit damage upgrade still pays out (2x default)
+        if (multiplier <= 1f && currentCritChance > 0f)
+            multiplier = 2f;
+
+        return multiplier;
     }
 
     // =====================================
@@ -342,7 +353,7 @@ void Awake()
     public float ConsistencyBonus()
     {
         float value = PlayerPrefs.GetInt("WinStreak");
-        if (HasUpgrade("ConsistencyBonus") && value > 0)
+        if (HasUpgrade("Consistency Bonus") && value > 0)
         return value * currentconsistencymultiplier;
         else
         return 1;

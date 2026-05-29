@@ -54,4 +54,12 @@ public class AccuracySystem : MonoBehaviour
 
         Debug.Log("Final Accuracy: " + finalAccuracy + "%");
     }
+
+public void ResetAccuracy()
+{
+    totalCharacters = 0;
+    mistakeCount = 0;
+    finalAccuracy = 100f;
 }
+}
+

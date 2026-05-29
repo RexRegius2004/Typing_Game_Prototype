@@ -1,115 +1,266 @@
-
 using UnityEngine;
 using TMPro;
+using System.Collections.Generic;
 
 public class TypingController : MonoBehaviour
 {
-    [Header("UI References")]
-    public TextMeshProUGUI targetTextUI;
+    [Header("GAME MODE")]
+    public TypingGameMode currentMode =
+        TypingGameMode.QuickWords;
 
-    [Header("Typing Settings")]
-    [TextArea(3, 10)]
+[Header("Contract Choice UI")]
+public GameObject longPromptChoiceUI;
+public bool pendingLongPrompt = false;
+
+    // =====================================
+    // QUICK WORD MODE
+    // =====================================
+
+    [Header("Quick Words")]
+
+    [Tooltip("Small words used in fast mode")]
+    public List<string> quickWords =
+        new List<string>()
+        {
+            "email",
+            "meeting",
+            "report",
+            "invoice",
+            "deadline",
+            "urgent",
+            "schedule",
+            "manager",
+            "client",
+            "memo"
+        };
+
+    [Tooltip("Seconds between long prompt offers in quick mode")]
+    public float longPromptOfferInterval = 10f;
+
+    private float longPromptOfferTimer = 0f;
+
+    // =====================================
+    // CURRENT TEXT
+    // =====================================
+
+    [Header("Current Text")]
     public string targetText;
 
     private string typedText = "";
     private int currentIndex = 0;
+    private bool[] critLetters;
 
-    [Header("Caret Settings")]
-    public bool showCaret = true;
-    public float caretBlinkSpeed = 0.5f;
+    // =====================================
+    // UI
+    // =====================================
 
-    private bool caretVisible = true;
-    private float caretTimer = 0f;
+    [Header("UI")]
+    public TextMeshProUGUI targetTextUI;
 
-    [Header("Prompt Rarity")]
-    public Prompt_Rarity Prompt_Tier;
-
-    [Header("Timer")]
-    public TimerScript timerScript;
-
-    private bool isGameActive = true;
+    // =====================================
+    // REFERENCES
+    // =====================================
 
     [Header("Systems")]
-    public UIManager uIManager;
-    public AccuracySystem accuracySystem;
     public RewardsSystem rewardsSystem;
+    public AccuracySystem accuracySystem;
+    public CurrencySystem currencySystem;
     public UpgradeManager upgradeManager;
+    public TimerScript timerScript;
+    public UIManager uiManager;
     public MusicManager musicManager;
 
-    [Header("Critical Hit")]
-    private bool[] criticalLetters;
+    // =====================================
+    // PROMPT RARITY
+    // =====================================
+
+    [Header("Long Prompt System")]
+    public Prompt_Rarity Prompt_Tier;
 
     [HideInInspector]
-    public string currentPromptRarity { get; private set; } = "Common";
+    public string currentPromptRarity =
+        "Common";
+
+    // =====================================
+    // GAME STATE
+    // =====================================
+
+    public bool isGameActive = true;
+
+    // =====================================
+    // START
+    // =====================================
 
     void Start()
     {
-        Prompt_Tier = GameObject.Find("Prompt_Random")
+        Prompt_Tier =
+            GameObject.Find("Prompt_Random")
             .GetComponent<Prompt_Rarity>();
 
-        targetText = Randomized_PromptRarity();
+        StartQuickWordMode();
 
-        GenerateCriticalLetters();
+        timerScript.OnTimerEnd +=
+            HandleTimeUp;
 
-        UpdateTextUI();
-
-        timerScript.OnTimerEnd += HandleTimeUp;
+        longPromptChoiceUI.SetActive(false);
     }
+
+    // =====================================
+    // UPDATE
+    // =====================================
 
     void Update()
     {
+        UpdateLongPromptOfferTimer();
+
         if (!isGameActive)
             return;
 
-        //HandleCaretBlink();
-
-        InputTyping();
+        HandleTyping();
     }
 
     // =====================================
-    // CARET BLINK
+    // START QUICK MODE
     // =====================================
 
-    void HandleCaretBlink()
+    public void StartQuickWordMode()
     {
-        caretTimer += Time.deltaTime;
+        currentMode =
+            TypingGameMode.QuickWords;
 
-        if (caretTimer >= caretBlinkSpeed)
+        GenerateRandomWord();
+
+        Debug.Log("QUICK MODE");
+    }
+
+    // =====================================
+    // START LONG MODE
+    // =====================================
+
+    public void StartLongPromptMode()
+    {
+        currentMode =
+            TypingGameMode.LongPrompt;
+
+        targetText =
+            Randomized_PromptRarity();
+        timerScript.StartTimer();
+        critLetters = null;
+        ResetTyping();
+
+        UpdateTextUI();
+
+        Debug.Log("LONG PROMPT MODE");
+    }
+
+    // =====================================
+    // GENERATE QUICK WORD
+    // =====================================
+
+    public void GenerateRandomWord()
+    {
+        int randomIndex =
+            Random.Range(
+                0,
+                quickWords.Count
+            );
+
+        targetText =
+            quickWords[randomIndex];
+
+        ResetTyping();
+
+        RollCritLettersForWord();
+
+        UpdateTextUI();
+    }
+
+    void RollCritLettersForWord()
+    {
+        critLetters = new bool[targetText.Length];
+
+        for (int i = 0; i < targetText.Length; i++)
         {
-            caretTimer = 0f;
-
-            caretVisible = !caretVisible;
-
-            UpdateTextUI();
+            critLetters[i] =
+                rewardsSystem.RollCritLetter();
         }
     }
 
+    bool IsCritLetter(int index)
+    {
+        return critLetters != null &&
+            index >= 0 &&
+            index < critLetters.Length &&
+            critLetters[index];
+    }
+
+    void UpdateLongPromptOfferTimer()
+    {
+        if (currentMode != TypingGameMode.QuickWords)
+            return;
+
+        if (pendingLongPrompt || !isGameActive)
+            return;
+
+        longPromptOfferTimer += Time.deltaTime;
+
+        if (longPromptOfferTimer >= longPromptOfferInterval)
+        {
+            longPromptOfferTimer = 0f;
+            ShowLongPromptOffer();
+        }
+    }
+
+    public void ResetLongPromptOfferTimer()
+    {
+        longPromptOfferTimer = 0f;
+    }
+
+    void ShowLongPromptOffer()
+    {
+        if (pendingLongPrompt)
+            return;
+
+        pendingLongPrompt = true;
+        isGameActive = false;
+
+        if (longPromptChoiceUI != null)
+            longPromptChoiceUI.SetActive(true);
+    }
+
     // =====================================
-    // TYPING INPUT
+    // RESET TYPING STATE
     // =====================================
 
-    void InputTyping()
+    void ResetTyping()
+    {
+        typedText = "";
+        currentIndex = 0;
+
+        // IMPORTANT:
+        // Reset accuracy per word
+        accuracySystem.ResetAccuracy();
+    }
+
+    // =====================================
+    // INPUT
+    // =====================================
+
+    void HandleTyping()
     {
         foreach (char c in Input.inputString)
         {
             // BACKSPACE
             if (c == '\b')
             {
-                if (typedText.Length > 0)
-                {
-                    typedText =
-                        typedText.Substring(
-                            0,
-                            typedText.Length - 1
-                        );
-
-                    currentIndex--;
-                    musicManager.PlayIncorrectKeySFX();
-                }
+                HandleBackspace();
             }
 
             // IGNORE ENTER
-            else if (c == '\n' || c == '\r')
+            else if (
+                c == '\n' ||
+                c == '\r'
+            )
             {
                 continue;
             }
@@ -117,62 +268,167 @@ public class TypingController : MonoBehaviour
             // NORMAL INPUT
             else
             {
-                if (currentIndex < targetText.Length)
-                {
-                    char expectedChar =
-                        targetText[currentIndex];
-
-                    typedText += c;
-
-                    accuracySystem.RegisterInput(
-                        c,
-                        expectedChar
-                    );
-
-                    CheckCriticalHit(
-                        c,
-                        expectedChar
-                    );
-
-                    currentIndex++;
-                    musicManager.PlayCorrectKeySFX();
-                    
-                }
+                TypeCharacter(c);
             }
         }
 
         UpdateTextUI();
-        
 
-        // FINISH
-        if (typedText.Length >= targetText.Length)
+        // FINISH CURRENT TEXT
+        if (
+            typedText.Length >=
+            targetText.Length
+        )
         {
-            FinishGame();
+            CompleteCurrentText();
         }
     }
 
     // =====================================
-    // UPDATE TEXT UI
+    // TYPE CHARACTER
+    // =====================================
+
+    void TypeCharacter(char c)
+    {
+        if (
+            currentIndex >=
+            targetText.Length
+        )
+            return;
+
+        char expectedChar =
+            targetText[currentIndex];
+
+        typedText += c;
+
+        accuracySystem.RegisterInput(
+            c,
+            expectedChar
+        );
+
+        currentIndex++;
+
+        // AUDIO
+        if (c == expectedChar)
+        {
+            musicManager.PlayCorrectKeySFX();
+        }
+        else
+        {
+            musicManager.PlayIncorrectKeySFX();
+        }
+    }
+
+    // =====================================
+    // BACKSPACE
+    // =====================================
+
+    void HandleBackspace()
+    {
+        if (typedText.Length <= 0)
+            return;
+
+        typedText =
+            typedText.Substring(
+                0,
+                typedText.Length - 1
+            );
+
+        currentIndex--;
+    }
+
+    // =====================================
+    // COMPLETE
+    // =====================================
+
+    void CompleteCurrentText()
+    {
+        accuracySystem.CalculateFinalAccuracy();
+        musicManager.FinishedWord();
+
+        // ---------------------------------
+        // QUICK WORD MODE
+        // ---------------------------------
+
+        if (
+            currentMode ==
+            TypingGameMode.QuickWords
+        )
+        {
+            int reward =
+                rewardsSystem
+                .CalculateQuickReward(
+                    targetText,
+                    typedText,
+                    accuracySystem.finalAccuracy,
+                    critLetters
+                );
+
+            Debug.Log(
+                "WORD COMPLETE +" +
+                reward
+            );
+            GenerateRandomWord();
+        }
+
+        // ---------------------------------
+        // LONG PROMPT MODE
+        // ---------------------------------
+
+        else
+        {
+            timerScript.StopTimer();
+
+            rewardsSystem
+            .CalculateLongPromptReward(
+                this,
+                accuracySystem,
+                timerScript
+            );
+
+            uiManager.OpenGameOverUI(true);
+
+            Debug.Log(
+                "LONG PROMPT COMPLETE"
+            );
+
+            isGameActive = false;
+        }
+    }
+
+    // =====================================
+    // UPDATE UI
     // =====================================
 
     void UpdateTextUI()
     {
         string result = "";
 
-        for (int i = 0; i < targetText.Length; i++)
+        for (
+            int i = 0;
+            i < targetText.Length;
+            i++
+        )
         {
-            char targetChar = targetText[i];
+            char targetChar =
+                targetText[i];
 
-            // =====================================
-            // TYPED CHARACTERS
-            // =====================================
+            bool isCritLetter =
+                currentMode ==
+                TypingGameMode.QuickWords &&
+                IsCritLetter(i);
 
+            // CORRECT
             if (i < typedText.Length)
             {
-                if (typedText[i] == targetChar)
+                if (
+                    typedText[i] ==
+                    targetChar
+                )
                 {
-                    result +=
-                        $"<color=white>{targetChar}</color>";
+                    result += isCritLetter
+                        ? $"<color=yellow>{targetChar}</color>"
+                        : $"<color=white>{targetChar}</color>";
                 }
                 else
                 {
@@ -181,248 +437,104 @@ public class TypingController : MonoBehaviour
                 }
             }
 
-            // =====================================
-            // CURRENT CHARACTER
-            // =====================================
-
+            // CURRENT
             else if (i == currentIndex)
             {
-                // Critical Letter
-                if (
-                    criticalLetters != null &&
-                    criticalLetters[i]
-                )
-                {
-                    result +=
-                        $"<mark=#FFD70088><color=#FFD700>{targetChar}</color></mark>";
-                }
-                else
-                {
-                    result +=
-                        $"<mark=#FFFFFF44>{targetChar}</mark>";
-                }
-
-                /*
-                if (showCaret && caretVisible)
-                {
-                    result += "<color=white>|</color>";
-                }
-                */
+                result += isCritLetter
+                    ? $"<mark=#FFFF0044><color=yellow>{targetChar}</color></mark>"
+                    : $"<mark=#FFFFFF44>{targetChar}</mark>";
             }
 
-            // =====================================
-            // UNTOUCHED CHARACTERS
-            // =====================================
-
+            // UNTOUCHED
             else
             {
-                // Critical Letter
-                if (
-                    criticalLetters != null &&
-                    criticalLetters[i]
-                )
-                {
-                    result +=
-                        $"<color=#FFD700>{targetChar}</color>";
-                }
-                else
-                {
-                    result +=
-                        $"<color=#777777>{targetChar}</color>";
-                }
-            }
-        }
-
-        targetTextUI.text = result;
-
-    }
-
-    // =====================================
-    // CRITICAL LETTERS
-    // =====================================
-
-    void GenerateCriticalLetters()
-    {
-        criticalLetters =
-            new bool[targetText.Length];
-
-        for (int i = 0; i < targetText.Length; i++)
-        {
-            // Ignore spaces
-            if (targetText[i] == ' ')
-                continue;
-
-            criticalLetters[i] =
-                Random.value <=
-                upgradeManager.currentCritChance;
-        }
-    }
-
-    void CheckCriticalHit(
-        char typedChar,
-        char expectedChar
-    )
-    {
-        int index = currentIndex;
-
-        if (
-            index < 0 ||
-            index >= criticalLetters.Length
-        )
-            return;
-
-        // Must be critical letter
-        if (!criticalLetters[index])
-            return;
-
-        // Must type correctly
-        if (typedChar != expectedChar)
-            return;
-
-        int critReward = Mathf.Max(
-            1,
-            Mathf.RoundToInt(
-                rewardsSystem.wordValue *
-                upgradeManager.currentCritHit
-            )
-        );
-
-        rewardsSystem.AddCriticalReward(
-            critReward
-        );
-
-        Debug.Log(
-            "CRITICAL HIT! +" + critReward
-        );
-    }
-
-    // =====================================
-    // FINISH GAME
-    // =====================================
-
-    void FinishGame()
-    {
-        isGameActive = false;
-
-        timerScript.StopTimer();
-
-        accuracySystem.CalculateFinalAccuracy();
-
-        rewardsSystem.CalculateRewards();
-
-        uIManager.OpenGameOverUI(true);
-
-        Debug.Log("You win!");
-    }
-
-    // =====================================
-    // SHOW FINAL ERRORS
-    // =====================================
-
-    void ShowFinalMistakes()
-    {
-        string result = "";
-
-        for (int i = 0; i < targetText.Length; i++)
-        {
-            if (
-                i < typedText.Length &&
-                typedText[i] == targetText[i]
-            )
-            {
-                result +=
-                    $"<color=white>{targetText[i]}</color>";
-            }
-            else
-            {
-                result +=
-                    $"<color=red>{targetText[i]}</color>";
+                result += isCritLetter
+                    ? $"<color=yellow>{targetChar}</color>"
+                    : $"<color=#777777>{targetChar}</color>";
             }
         }
 
         targetTextUI.text = result;
     }
 
-#region Prompt Rarity
+    // =====================================
+    // PROMPT RARITY
+    // =====================================
 
     public string Randomized_PromptRarity()
     {
-        if (
-            Prompt_Tier == null ||
-            Prompt_Tier.promptList == null ||
-            Prompt_Tier.promptList.PromptRarity == null ||
-            Prompt_Tier.promptList.PromptRarity.Length == 0
-        )
-        {
-            Debug.LogError(
-                "Prompt_Tier reference is missing!"
-            );
-
-            return "Error: No Prompt Rarity";
-        }
-
-        // Random row
         var allRows =
             Prompt_Tier.promptList.PromptRarity;
 
         int randomIndex =
-            Random.Range(0, allRows.Length);
+            Random.Range(
+                0,
+                allRows.Length
+            );
 
-        var rows = allRows[randomIndex];
+        var rows =
+            allRows[randomIndex];
 
-        // Roll rarity
-        float rarityRoll = Random.value;
+        float rarityRoll =
+            Random.value;
 
-        string chosenRarity = rows.Common;
+        string chosenRarity =
+            rows.Common;
 
         if (rarityRoll < 0.50f)
         {
-            chosenRarity = rows.Common;
-            currentPromptRarity = "Common";
-            Debug.Log(rarityRoll);
+            chosenRarity =
+                rows.Common;
+
+            currentPromptRarity =
+                "Common";
         }
         else if (rarityRoll < 0.80f)
         {
-            chosenRarity = rows.Uncommon;
-            currentPromptRarity = "Uncommon";
-            Debug.Log(rarityRoll);
+            chosenRarity =
+                rows.Uncommon;
+
+            currentPromptRarity =
+                "Uncommon";
         }
         else if (rarityRoll < 0.99f)
         {
-            chosenRarity = rows.Rare;
-            currentPromptRarity = "Rare";
-            Debug.Log(rarityRoll);
-        }
-        else if (rarityRoll < 1f)
-        {
-            chosenRarity = rows.Epic;
-            currentPromptRarity = "Epic";
-            Debug.Log(rarityRoll);
+            chosenRarity =
+                rows.Rare;
+
+            currentPromptRarity =
+                "Rare";
         }
         else
         {
-            chosenRarity = rows.Legendary;
-            currentPromptRarity = "Legendary";
-            Debug.Log(rarityRoll);
+            chosenRarity =
+                rows.Epic;
+
+            currentPromptRarity =
+                "Epic";
         }
 
         return chosenRarity;
     }
 
-#endregion
-
     // =====================================
-    // TIMER END
+    // TIME UP
     // =====================================
 
     void HandleTimeUp()
     {
+        if (
+            currentMode !=
+            TypingGameMode.LongPrompt
+        )
+            return;
+
         isGameActive = false;
 
-        ShowFinalMistakes();
+        uiManager.OpenGameOverUI(false);
 
-        uIManager.OpenGameOverUI(false);
-
-        Debug.Log("You Lose! Time ran out.");
+        Debug.Log("TIME UP");
     }
+
+   
 }
