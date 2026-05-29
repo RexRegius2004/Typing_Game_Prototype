@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI gameOverTextUI;
     public TextMeshProUGUI upgradesTextUI;
     public TextMeshProUGUI currencyTextUI;
+    public TextMeshProUGUI currencyTextUI2;
     public TextMeshProUGUI P_RarityTextUI;
 
 
@@ -85,6 +86,7 @@ public class UIManager : MonoBehaviour
     public void UpdateCurrencyUI()
     {
         currencyTextUI.text = $"${currencySystem.Money.ToString()}";
+        currencyTextUI2.text = $"${currencySystem.Money.ToString()}"; //PlaceHolder For now, cant solve sorting layer issue.
     }
 
     public void UpdateRarityUI()
