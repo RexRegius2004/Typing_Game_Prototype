@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
+using System.Collections; // Add this at the top if not already present
 
 public class TypingController : MonoBehaviour
 {
@@ -32,21 +33,6 @@ public bool pendingLongPrompt = false;
             "manager",
             "client",
             "memo",
-            "nda",
-            "capital",
-            "budget",
-            "strategy",
-            "revenue",
-            "profit",
-            "loss",
-            "growth",
-            "gain",
-            "margin",
-            "cost",
-            "expense",
-            "assets",
-            "liability",
-            "accountability"
         };
 
     [Tooltip("Seconds between long prompt offers in quick mode")]
@@ -106,6 +92,16 @@ public bool pendingLongPrompt = false;
     // START
     // =====================================
 
+    // =====================================
+    // WORD SHAKE
+    // =====================================
+    [Header("Shake Words")]
+
+    public float shakeDuration = 0.5f;
+    public float rotationAmount;
+
+    private Coroutine shakeCoroutine;
+
     void Start()
     {
         Prompt_Tier =
@@ -118,6 +114,7 @@ public bool pendingLongPrompt = false;
             HandleTimeUp;
 
         longPromptChoiceUI.SetActive(false);
+        
     }
 
     // =====================================
@@ -186,6 +183,46 @@ public bool pendingLongPrompt = false;
 
         UpdateTextUI();
     }
+
+    // =====================================
+    // WORD SHAKE
+    // =====================================
+
+    IEnumerator ShakeText() 
+    {
+        float elapsed = 0f;
+
+        while (elapsed < shakeDuration)
+        {
+            float z =
+                Random.Range(
+                    -rotationAmount,
+                    rotationAmount
+                );
+
+            targetTextUI.rectTransform.localRotation =
+                Quaternion.Euler(0, 0, z);
+
+            elapsed += Time.deltaTime;
+
+            yield return null;
+        }
+
+        targetTextUI.rectTransform.localRotation =
+            Quaternion.identity;
+    }
+
+    void TriggerShake() 
+    {
+        if (shakeCoroutine != null)
+            StopCoroutine(shakeCoroutine);
+
+        shakeCoroutine = StartCoroutine(ShakeText());
+    }
+
+    // =====================================
+    // WORD SHAKE
+    // =====================================
 
     void RollCritLettersForWord()
     {
@@ -308,6 +345,7 @@ public bool pendingLongPrompt = false;
         )
             return;
 
+
         char expectedChar =
             targetText[currentIndex];
 
@@ -345,6 +383,8 @@ public bool pendingLongPrompt = false;
     {
         if (typedText.Length <= 0)
             return;
+
+        TriggerShake();
 
         typedText =
             typedText.Substring(

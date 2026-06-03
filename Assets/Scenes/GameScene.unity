@@ -12176,6 +12176,8 @@ MonoBehaviour:
   Prompt_Tier: {fileID: 2119268844}
   currentPromptRarity: Common
   isGameActive: 1
+  shakeDuration: 0.5
+  rotationAmount: 3
 --- !u!4 &1863526277
 Transform:
   m_ObjectHideFlags: 0
