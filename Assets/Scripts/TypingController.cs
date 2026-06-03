@@ -350,10 +350,9 @@ public bool pendingLongPrompt = false;
         // QUICK WORD MODE
         // ---------------------------------
 
-        if (
-            currentMode ==
-            TypingGameMode.QuickWords
-        )
+         if (currentMode == TypingGameMode.QuickWords)
+        {
+            if (typedText == targetText)
         {
             int reward =
                 rewardsSystem
@@ -365,9 +364,13 @@ public bool pendingLongPrompt = false;
                 );
 
             Debug.Log(
-                "WORD COMPLETE +" +
-                reward
-            );
+                "WORD COMPLETE +" + reward);
+        }
+        else
+            {
+                Debug.Log("MISTYPED WORD: No Reward");
+            }
+
             GenerateRandomWord();
         }
 
