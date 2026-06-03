@@ -33,6 +33,17 @@ public bool pendingLongPrompt = false;
             "manager",
             "client",
             "memo",
+            "signature",
+            "attachment",
+            "project",
+            "budget",
+            "presentation",
+            "feedback",
+            "proposal",
+            "strategy",
+            "marketing",
+            "sales",
+            "nda"
         };
 
     [Tooltip("Seconds between long prompt offers in quick mode")]
