@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
     public GameObject UpgradePanel;
     public GameObject DebugPanel;
     public GameObject P_RarityText;
+    public GameObject Phase2;
     public TextMeshProUGUI gameOverTextUI;
     public TextMeshProUGUI upgradesTextUI;
     public TextMeshProUGUI currencyTextUI;
@@ -36,6 +37,7 @@ public class UIManager : MonoBehaviour
         UpgradePanel.SetActive(false);
         DebugPanel.SetActive(false);
         P_RarityText.SetActive(false);
+        Phase2.SetActive(false);
          // Hide rarity UI at start, will show when a prompt is active
     }
 
@@ -45,6 +47,7 @@ public class UIManager : MonoBehaviour
         UpdateUpgradeUI();
         UpdateCurrencyUI();
         UpdateRarityUI();
+        PlayerPromotion();
     }
     
     public void OpenGameOverUI(bool Outcome)
@@ -149,5 +152,12 @@ public void DeclineLongPrompt()
 
     typingController.GenerateRandomWord();
 }
-    
+
+public void PlayerPromotion()
+    {
+        if (currencySystem.Money >= 1000)
+        {
+            Phase2.SetActive(true);
+        }
+    }
 }
