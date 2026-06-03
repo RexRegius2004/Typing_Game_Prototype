@@ -31,7 +31,22 @@ public bool pendingLongPrompt = false;
             "schedule",
             "manager",
             "client",
-            "memo"
+            "memo",
+            "nda",
+            "capital",
+            "budget",
+            "strategy",
+            "revenue",
+            "profit",
+            "loss",
+            "growth",
+            "gain",
+            "margin",
+            "cost",
+            "expense",
+            "assets",
+            "liability",
+            "accountability"
         };
 
     [Tooltip("Seconds between long prompt offers in quick mode")]
