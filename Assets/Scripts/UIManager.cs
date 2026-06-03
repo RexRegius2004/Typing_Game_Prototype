@@ -160,4 +160,9 @@ public void PlayerPromotion()
             Phase2.SetActive(true);
         }
     }
+
+public void ClosePhase2()
+    {
+        Phase2.SetActive(false);
+    }
 }
