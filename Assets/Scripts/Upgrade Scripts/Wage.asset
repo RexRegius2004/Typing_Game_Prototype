@@ -15,7 +15,7 @@ MonoBehaviour:
   upgradeName: Wage
   critChance: 0
   critHit: 0
-  wageBonus: 100
+  wageBonus: 10
   aheadSchedMultiplier: 0
   delaytacticbonus: 0
   consistencyBonusMultiplier: 0

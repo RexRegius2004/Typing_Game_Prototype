@@ -159,11 +159,10 @@ public bool pendingLongPrompt = false;
 
     public void GenerateRandomWord()
     {
-        int randomIndex =
-            Random.Range( 0, quickWords.Count );
+        int randomIndex = Random.Range( 0, quickWords.Count );
 
-        targetText =
-            quickWords[randomIndex];
+        targetText = quickWords[randomIndex];
+
 
         ResetTyping();
 

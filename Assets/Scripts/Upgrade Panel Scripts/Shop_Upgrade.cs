@@ -32,21 +32,24 @@ public class Shop_Upgrade : MonoBehaviour
 
 void Start()
     {
-        wageCostText.text = UpgradeCosts[0].ToString() + " $";
-        critChanceCostText.text = UpgradeCosts[1].ToString() + " $";
-        critHitCostText.text = UpgradeCosts[2].ToString() + " $";
-        aheadScheduleCostText.text = UpgradeCosts[3].ToString() + " $";
-        delayTacticsCostText.text = UpgradeCosts[4].ToString() + " $";
-        consistencyBonusCostText.text = UpgradeCosts[5].ToString() + " $";
-
+        wageCostText.text = GetCost("Wage", 0).ToString() + " $";
+        critChanceCostText.text = GetCost("Critical Chance", 1).ToString() + " $";
+        critHitCostText.text = GetCost("Critical Hit", 2).ToString() + " $";
+        aheadScheduleCostText.text = GetCost("Ahead of Schedule", 3).ToString() + " $";
+        delayTacticsCostText.text = GetCost("Delay Tactics", 4).ToString() + " $";
+        consistencyBonusCostText.text = GetCost("Consistency Bonus", 5).ToString() + " $";
     }
+void Update()
+        {
+           
+        }
+    
     public void BuyWage()
     {
         int currentLevel = upgradeManager.GetUpgradeLevel("Wage");
         int cost = currentLevel == 0 
             ? UpgradeCosts[0] 
             : UpgradeCosts[0] * (currentLevel + 1) * 2;
-        wageCostText.text = cost.ToString() + " $";
         if (currencySystem.Money < cost)
         {
             return; // Not enough money
@@ -56,6 +59,7 @@ void Start()
         musicManager.PlayButtonClickSFX();
         currencySystem.Money -= cost;
         upgradeManager.AddUpgrade(upgradeData[0]);
+        RefreshUpgradeCosts();
         Debug.Log(cost);
     }
 
@@ -65,7 +69,7 @@ void Start()
         int cost = currentLevel == 0 
             ? UpgradeCosts[1] 
             : UpgradeCosts[1] * (currentLevel + 1) * 2;
-        critChanceCostText.text = cost.ToString() + " $";
+        
         if (currencySystem.Money < cost)
         {
             return; // Not enough money
@@ -74,6 +78,7 @@ void Start()
         musicManager.PlayButtonClickSFX();
         currencySystem.Money -= cost;
         upgradeManager.AddUpgrade(upgradeData[1]);
+        RefreshUpgradeCosts();
         Debug.Log(cost);
 
     }   
@@ -84,7 +89,7 @@ void Start()
         int cost = currentLevel == 0 
             ? UpgradeCosts[2] 
             : UpgradeCosts[2] * (currentLevel + 1) * 2;
-        critHitCostText.text = cost.ToString() + " $";
+        ;
         if (currencySystem.Money < cost)      
           {
             return; // Not enough money
@@ -93,6 +98,7 @@ void Start()
         musicManager.PlayButtonClickSFX();
         currencySystem.Money -= cost;
         upgradeManager.AddUpgrade(upgradeData[2]);
+        RefreshUpgradeCosts();
         Debug.Log(cost);
        
     }
@@ -103,7 +109,7 @@ void Start()
         int cost = currentLevel == 0
             ? UpgradeCosts[3]
             : UpgradeCosts[3] * (currentLevel + 1) * 2;
-        aheadScheduleCostText.text = cost.ToString() + " $";
+        
         if (currencySystem.Money < cost)
         {
             return; // Not enough money
@@ -112,6 +118,7 @@ void Start()
         musicManager.PlayButtonClickSFX();
         currencySystem.Money -= cost;
         upgradeManager.AddUpgrade(upgradeData[3]);
+        RefreshUpgradeCosts();
         Debug.Log(cost);
 
 
@@ -127,7 +134,7 @@ void Start()
         int cost = currentLevel == 0
             ? UpgradeCosts[4]
             : UpgradeCosts[4] * (currentLevel + 1) * 2;
-        delayTacticsCostText.text = cost.ToString() + " $";
+        ;
         if (currencySystem.Money < cost)
         {
             return; // Not enough money
@@ -136,6 +143,7 @@ void Start()
         musicManager.PlayButtonClickSFX();
         currencySystem.Money -= cost;
         upgradeManager.AddUpgrade(upgradeData[4]);
+        RefreshUpgradeCosts();
         Debug.Log(cost);
     }
 
@@ -145,8 +153,7 @@ void Start()
         int cost = currentLevel == 0
             ? UpgradeCosts[5]
             : UpgradeCosts[5] * (currentLevel + 1) * 2;
-        consistencyBonusCostText.text = cost.ToString() + " $";
-        if (currencySystem.Money < cost)
+               if (currencySystem.Money < cost)
         {
             return; // Not enough money
         }
@@ -154,7 +161,24 @@ void Start()
         musicManager.PlayButtonClickSFX();
         currencySystem.Money -= cost;
         upgradeManager.AddUpgrade(upgradeData[5]);
+        RefreshUpgradeCosts();
         Debug.Log(cost);
     }
+    void RefreshUpgradeCosts()
+    {
+        wageCostText.text = GetCost("Wage", 0).ToString() + " $";
+        critChanceCostText.text = GetCost("Critical Chance", 1).ToString() + " $";
+        critHitCostText.text = GetCost("Critical Hit", 2).ToString() + " $";
+        aheadScheduleCostText.text = GetCost("Ahead of Schedule", 3).ToString() + " $";
+        delayTacticsCostText.text = GetCost("Delay Tactics", 4).ToString() + " $";
+        consistencyBonusCostText.text = GetCost("Consistency Bonus", 5).ToString() + " $";
+    }
 
+    int GetCost(string upgradeName, int costIndex)
+{
+    int currentLevel = upgradeManager.GetUpgradeLevel(upgradeName);
+    return currentLevel == 0
+        ? UpgradeCosts[costIndex]
+        : UpgradeCosts[costIndex] * (currentLevel + 1) * 2;
+}
 }

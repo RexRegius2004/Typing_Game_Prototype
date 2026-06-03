@@ -7061,6 +7061,7 @@ MonoBehaviour:
   gameOverUI: {fileID: 838305647}
   UpgradePanel: {fileID: 1067992217}
   DebugPanel: {fileID: 1535376872}
+  P_RarityText: {fileID: 1858694866}
   gameOverTextUI: {fileID: 1331427003}
   upgradesTextUI: {fileID: 891715602}
   currencyTextUI: {fileID: 420411739}
@@ -12792,7 +12793,7 @@ GameObject:
   - component: {fileID: 2119268845}
   - component: {fileID: 2119268844}
   m_Layer: 0
-  m_Name: Prompt_Random
+  m_Name: Prompt_Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

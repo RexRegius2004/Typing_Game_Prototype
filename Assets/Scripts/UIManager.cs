@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
     public GameObject gameOverUI;
     public GameObject UpgradePanel;
     public GameObject DebugPanel;
+    public GameObject P_RarityText;
     public TextMeshProUGUI gameOverTextUI;
     public TextMeshProUGUI upgradesTextUI;
     public TextMeshProUGUI currencyTextUI;
@@ -34,6 +35,8 @@ public class UIManager : MonoBehaviour
         gameOverUI.SetActive(false);
         UpgradePanel.SetActive(false);
         DebugPanel.SetActive(false);
+        P_RarityText.SetActive(false);
+         // Hide rarity UI at start, will show when a prompt is active
     }
 
     // Update is called once per frame
@@ -129,6 +132,7 @@ public class UIManager : MonoBehaviour
 
     typingController.ResetLongPromptOfferTimer();
     typingController.StartLongPromptMode();
+    P_RarityText.SetActive(true); 
 
     typingController.isGameActive = true;
 }
