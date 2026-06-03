@@ -109,7 +109,7 @@ public bool pendingLongPrompt = false;
     void Start()
     {
         Prompt_Tier =
-            GameObject.Find("Prompt_Random")
+            GameObject.Find("Prompt_Manager")
             .GetComponent<Prompt_Rarity>();
 
         StartQuickWordMode();
@@ -175,10 +175,7 @@ public bool pendingLongPrompt = false;
     public void GenerateRandomWord()
     {
         int randomIndex =
-            Random.Range(
-                0,
-                quickWords.Count
-            );
+            Random.Range( 0, quickWords.Count );
 
         targetText =
             quickWords[randomIndex];
@@ -314,6 +311,12 @@ public bool pendingLongPrompt = false;
         char expectedChar =
             targetText[currentIndex];
 
+        if ( c != expectedChar && currentMode == TypingGameMode.QuickWords)
+        {
+            musicManager.PlayIncorrectKeySFX();
+            GenerateRandomWord();
+            return;
+        }
         typedText += c;
 
         accuracySystem.RegisterInput(
