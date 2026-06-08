@@ -1365,6 +1365,14 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1715864056182201946, guid: ac5f2719ecc13594f982ee146a1b6730, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1882779744}
+    - target: {fileID: 1715864056182201946, guid: ac5f2719ecc13594f982ee146a1b6730, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetSFXVolume
+      objectReference: {fileID: 0}
     - target: {fileID: 2219148467055404668, guid: ac5f2719ecc13594f982ee146a1b6730, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -1396,6 +1404,14 @@ PrefabInstance:
     - target: {fileID: 2690441793729805087, guid: ac5f2719ecc13594f982ee146a1b6730, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -218.93
+      objectReference: {fileID: 0}
+    - target: {fileID: 3083180455343437215, guid: ac5f2719ecc13594f982ee146a1b6730, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1882779744}
+    - target: {fileID: 3083180455343437215, guid: ac5f2719ecc13594f982ee146a1b6730, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetMusicVolume
       objectReference: {fileID: 0}
     - target: {fileID: 3228705797710074233, guid: ac5f2719ecc13594f982ee146a1b6730, type: 3}
       propertyPath: m_Color.b
@@ -1548,6 +1564,14 @@ PrefabInstance:
     - target: {fileID: 5173715364370079965, guid: ac5f2719ecc13594f982ee146a1b6730, type: 3}
       propertyPath: m_AnchorMin.x
       value: 0.49995
+      objectReference: {fileID: 0}
+    - target: {fileID: 5680099672933519339, guid: ac5f2719ecc13594f982ee146a1b6730, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1882779744}
+    - target: {fileID: 5680099672933519339, guid: ac5f2719ecc13594f982ee146a1b6730, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetMasterVolume
       objectReference: {fileID: 0}
     - target: {fileID: 6880096061495061204, guid: ac5f2719ecc13594f982ee146a1b6730, type: 3}
       propertyPath: m_AnchorMax.y
@@ -11067,11 +11091,12 @@ MonoBehaviour:
   buttonClickSFX: {fileID: 8300000, guid: bbf467a362c5b9c4a8e49a3ce223173d, type: 3}
   correctKeySFX: {fileID: 8300000, guid: 18dbd844b90d7e142ab1676b104f74c6, type: 3}
   incorrectKeySFX: {fileID: 8300000, guid: bbf467a362c5b9c4a8e49a3ce223173d, type: 3}
-  MainmenuMusic: {fileID: 0}
-  gameplayMusic: {fileID: 8300000, guid: 1704bee0eaf115d4796db49bc4f2f7b1, type: 3}
+  CriticalHitSFX: {fileID: 8300000, guid: 5e4833afae153fe45a17b9dbb8153faa, type: 3}
   FinishedWordSFX:
   - {fileID: 8300000, guid: 6745771cbe81a9e418dd1d519f0a309a, type: 3}
   - {fileID: 8300000, guid: 91fd5f558dfd85c4ebb6d2b7dca88d6f, type: 3}
+  MainmenuMusic: {fileID: 0}
+  gameplayMusic: {fileID: 8300000, guid: 1704bee0eaf115d4796db49bc4f2f7b1, type: 3}
   NormalPitch: 1
 --- !u!4 &1669817050
 Transform:
@@ -12798,8 +12823,8 @@ MonoBehaviour:
   Prompt_Tier: {fileID: 2119268844}
   currentPromptRarity: Common
   isGameActive: 1
-  shakeDuration: 0.5
-  rotationAmount: 3
+  shakeDuration: 0.08
+  rotationAmount: 2
 --- !u!4 &1863526277
 Transform:
   m_ObjectHideFlags: 0
@@ -12880,7 +12905,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1933655591
 RectTransform:
   m_ObjectHideFlags: 0

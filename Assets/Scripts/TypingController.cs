@@ -107,7 +107,7 @@ public bool pendingLongPrompt = false;
     // WORD SHAKE
     // =====================================
     [Header("Shake Words")]
-
+// Make it a subtle shake horizontal
     public float shakeDuration = 0.5f;
     public float rotationAmount;
 
@@ -201,25 +201,28 @@ public bool pendingLongPrompt = false;
     IEnumerator ShakeText() 
     {
         float elapsed = 0f;
-
+        Vector3 originalPos = targetTextUI.rectTransform.localPosition;
         while (elapsed < shakeDuration)
         {
-            float z =
+            float x =
                 Random.Range(
                     -rotationAmount,
                     rotationAmount
                 );
 
-            targetTextUI.rectTransform.localRotation =
-                Quaternion.Euler(0, 0, z);
+            targetTextUI.rectTransform.localPosition =
+                new Vector3(
+                originalPos.x + x,
+                originalPos.y,
+                originalPos.z 
+                );
 
             elapsed += Time.deltaTime;
 
             yield return null;
         }
 
-        targetTextUI.rectTransform.localRotation =
-            Quaternion.identity;
+        targetTextUI.rectTransform.localPosition = originalPos;
     }
 
     void TriggerShake() 
@@ -316,6 +319,7 @@ public bool pendingLongPrompt = false;
             else
             {
                 TypeCharacter(c);
+                TriggerShake();
             }
         }
 
@@ -358,6 +362,11 @@ public bool pendingLongPrompt = false;
         {
             critLetters[currentIndex] =
                 rewardsSystem.RollCritLetter();
+
+                if (critLetters[currentIndex])
+                {
+                    musicManager.PlayCriticalHitSFX();
+                }
         }
         typedText += c;
 
@@ -387,8 +396,6 @@ public bool pendingLongPrompt = false;
     {
         if (typedText.Length <= 0)
             return;
-
-        TriggerShake();
 
         typedText =
             typedText.Substring(
@@ -493,6 +500,7 @@ public bool pendingLongPrompt = false;
                     result += isCritLetter
                         ? $"<color=yellow>{targetChar}</color>"
                         : $"<color=white>{targetChar}</color>";
+                    
                 }
                 else
                 {

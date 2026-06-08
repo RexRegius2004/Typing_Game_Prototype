@@ -12,13 +12,18 @@ public class MusicManager : MonoBehaviour
     [SerializeField] private AudioSource sfxSource;
     public AudioMixer audioMixer;
 
-    [Header("Audio Clips")]
+    [Header("SFX")]
     public AudioClip buttonClickSFX;
     public AudioClip correctKeySFX;
     public AudioClip incorrectKeySFX;
+    public AudioClip CriticalHitSFX;
+    public AudioClip[] FinishedWordSFX;
+
+    [Header("Music")]
     public AudioClip MainmenuMusic;
     public AudioClip gameplayMusic;
-    public AudioClip[] FinishedWordSFX;
+    
+    
 
 [Header("Pitch")]
 public float NormalPitch = 1f;
@@ -64,6 +69,12 @@ public float NormalPitch = 1f;
     {
         sfxSource.PlayOneShot(correctKeySFX);
         
+    }
+
+    public void PlayCriticalHitSFX()
+    {
+        sfxSource.PlayOneShot(CriticalHitSFX);
+        sfxSource.pitch = NormalPitch;
     }
 
     public void PlayIncorrectKeySFX()

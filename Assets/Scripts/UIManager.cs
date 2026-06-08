@@ -1,6 +1,8 @@
 using UnityEngine;
 using TMPro;
 using System.Text;
+using UnityEngine.SceneManagement;
+
 
 public class UIManager : MonoBehaviour
 {
@@ -30,6 +32,26 @@ public class UIManager : MonoBehaviour
     public TypingController typingController;
   
 
+
+    void Awake()
+{
+    // Script references — safe to auto-find by type
+    if (rewardsSystem == null)
+        rewardsSystem = FindAnyObjectByType<RewardsSystem>();
+    if (typingController == null)
+        typingController = FindAnyObjectByType<TypingController>();
+    if (musicManager == null)
+        musicManager = FindAnyObjectByType<MusicManager>();
+    if (currencySystem == null)
+        currencySystem = FindAnyObjectByType<CurrencySystem>();
+    if (UpgradeManager == null)
+        UpgradeManager = FindAnyObjectByType<UpgradeManager>();
+
+    if (gameOverUI == null) Debug.LogError("[UIManager] gameOverUI not assigned!");
+    if (UpgradePanel == null) Debug.LogError("[UIManager] UpgradePanel not assigned!");
+    if (breakdownTextUI == null) Debug.LogError("[UIManager] breakdownTextUI not assigned!");
+
+}
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -164,5 +186,6 @@ public void PlayerPromotion()
 public void ClosePhase2()
     {
         Phase2.SetActive(false);
+        SceneManager.LoadScene("Phase2");
     }
 }

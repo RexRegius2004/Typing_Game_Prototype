@@ -84,22 +84,28 @@ public class Settings : MonoBehaviour
     public void SetMasterVolume()
     {
         volume = masterSlider.value;
-        musicManager.audioMixer.SetFloat("MasterVolume", Mathf.Log10(volume) * 20);
+        float safeVolume = Mathf.Max(volume, 0.0001f); 
+        musicManager.audioMixer.SetFloat("MasterVolume", Mathf.Log10(safeVolume) * 20);
         PlayerPrefs.SetFloat("MasterVolume", volume);
+        PlayerPrefs.Save();
     }
 
     public void SetMusicVolume()
     {
         volume = musicSlider.value;
-        musicManager.audioMixer.SetFloat("MusicVolume", Mathf.Log10(volume) * 20);
+        float safeVolume = Mathf.Max(volume, 0.0001f);
+        musicManager.audioMixer.SetFloat("MusicVolume", Mathf.Log10(safeVolume) * 20);
         PlayerPrefs.SetFloat("MusicVolume", volume);
+        PlayerPrefs.Save();
     }
 
     public void SetSFXVolume()
     {
         volume = sfxSlider.value;
-        musicManager.audioMixer.SetFloat("SFXVolume", Mathf.Log10(volume) * 20);
+        float safeVolume = Mathf.Max(volume, 0.0001f);
+        musicManager.audioMixer.SetFloat("SFXVolume", Mathf.Log10(safeVolume) * 20);
         PlayerPrefs.SetFloat("SFXVolume", volume);
+        PlayerPrefs.Save();
     }
 
     public void LoadVolume()
@@ -107,6 +113,7 @@ public class Settings : MonoBehaviour
         musicSlider.value = PlayerPrefs.GetFloat("MusicVolume");
         masterSlider.value = PlayerPrefs.GetFloat("MasterVolume");
         sfxSlider.value = PlayerPrefs.GetFloat("SFXVolume");
+
 
         SetMusicVolume();
         SetMasterVolume();
