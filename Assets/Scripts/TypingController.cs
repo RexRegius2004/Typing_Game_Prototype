@@ -189,7 +189,7 @@ public bool pendingLongPrompt = false;
 
         ResetTyping();
 
-        RollCritLettersForWord();
+        critLetters = new bool[targetText.Length];
 
         UpdateTextUI();
     }
@@ -233,18 +233,6 @@ public bool pendingLongPrompt = false;
     // =====================================
     // WORD SHAKE
     // =====================================
-
-    void RollCritLettersForWord()
-    {
-        critLetters = new bool[targetText.Length];
-
-        for (int i = 0; i < targetText.Length; i++)
-        {
-            critLetters[i] =
-                rewardsSystem.RollCritLetter();
-        }
-    }
-
     bool IsCritLetter(int index)
     {
         return critLetters != null &&
@@ -364,6 +352,12 @@ public bool pendingLongPrompt = false;
             musicManager.PlayIncorrectKeySFX();
             GenerateRandomWord();
             return;
+        }
+
+        if (c == expectedChar && currentMode == TypingGameMode.QuickWords)
+        {
+            critLetters[currentIndex] =
+                rewardsSystem.RollCritLetter();
         }
         typedText += c;
 
@@ -485,8 +479,7 @@ public bool pendingLongPrompt = false;
                 targetText[i];
 
             bool isCritLetter =
-                currentMode ==
-                TypingGameMode.QuickWords &&
+                currentMode == TypingGameMode.QuickWords && i < typedText.Length &&
                 IsCritLetter(i);
 
             // CORRECT
@@ -609,3 +602,5 @@ public bool pendingLongPrompt = false;
 
    
 }
+
+
