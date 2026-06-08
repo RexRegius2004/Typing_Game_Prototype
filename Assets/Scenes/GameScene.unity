@@ -11091,7 +11091,7 @@ MonoBehaviour:
   buttonClickSFX: {fileID: 8300000, guid: bbf467a362c5b9c4a8e49a3ce223173d, type: 3}
   correctKeySFX: {fileID: 8300000, guid: 18dbd844b90d7e142ab1676b104f74c6, type: 3}
   incorrectKeySFX: {fileID: 8300000, guid: bbf467a362c5b9c4a8e49a3ce223173d, type: 3}
-  CriticalHitSFX: {fileID: 8300000, guid: 5e4833afae153fe45a17b9dbb8153faa, type: 3}
+  CriticalHitSFX: {fileID: 8300000, guid: 8427b2ffac72a734e8b7e0e6e13ec60f, type: 3}
   FinishedWordSFX:
   - {fileID: 8300000, guid: 6745771cbe81a9e418dd1d519f0a309a, type: 3}
   - {fileID: 8300000, guid: 91fd5f558dfd85c4ebb6d2b7dca88d6f, type: 3}
