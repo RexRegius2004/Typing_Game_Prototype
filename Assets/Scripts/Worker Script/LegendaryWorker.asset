@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb8ee776de7ca564db17701c63c73725, type: 3}
-  m_Name: CommonWorker
+  m_Name: LegendaryWorker
   m_EditorClassIdentifier: Assembly-CSharp::WorkerData
-  workerName: Common Worker
+  workerName: Legendary Worker
   icon: {fileID: -7675262176189822710, guid: 5e1946bea51c2f74ebd7ce1431a1761a, type: 3}
-  typingSpeed: 20
+  typingSpeed: 100
   documentLength: 150
-  baseIncome: 10
+  baseIncome: 50
