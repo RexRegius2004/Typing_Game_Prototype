@@ -108,9 +108,10 @@ public bool pendingLongPrompt = false;
     // =====================================
     [Header("Shake Words")]
 // Make it a subtle shake horizontal
-    public float shakeDuration = 0.5f;
+    public float shakeDuration = 0.2f;
+    public float MistakeShakeDuration = 0.01f;
+    public float shakeAmount = 5f;
     public float rotationAmount;
-
     private Coroutine shakeCoroutine;
 
     void Start()
@@ -168,7 +169,7 @@ public bool pendingLongPrompt = false;
         targetText =
             Randomized_PromptRarity();
         timerScript.StartTimer();
-        critLetters = null;
+        critLetters = new bool[targetText.Length];
         ResetTyping();
 
         UpdateTextUI();
@@ -224,6 +225,57 @@ public bool pendingLongPrompt = false;
 
         targetTextUI.rectTransform.localPosition = originalPos;
     }
+
+    IEnumerator ShakeThenReset()
+{
+    isGameActive = false;
+
+    Vector3 originalPos =
+        targetTextUI.rectTransform.localPosition;
+
+    // Left
+    targetTextUI.rectTransform.localPosition =
+        originalPos + Vector3.left * 6f;
+    yield return new WaitForSeconds(0.15f);
+
+    // Right
+    targetTextUI.rectTransform.localPosition =
+        originalPos + Vector3.right * 6f;
+    yield return new WaitForSeconds(0.15f);
+
+    // Back
+    targetTextUI.rectTransform.localPosition =
+        originalPos;
+
+    GenerateRandomWord();
+
+    isGameActive = true;
+}
+
+    IEnumerator ShakeTextDuration(float duration)
+{
+    Vector3 originalPos = targetTextUI.rectTransform.localPosition;
+
+    float elapsed = 0f;
+    float amplitude = 8f;
+
+    while (elapsed < duration)
+    {
+        elapsed += Time.deltaTime;
+
+        float x =
+            Mathf.Sin(elapsed * 80f) *
+            amplitude *
+            (1f - elapsed / duration);
+
+        targetTextUI.rectTransform.localPosition =
+            originalPos + new Vector3(x, 0f, 0f);
+
+        yield return null;
+    }
+
+    targetTextUI.rectTransform.localPosition = originalPos;
+}
 
     void TriggerShake() 
     {
@@ -293,101 +345,95 @@ public bool pendingLongPrompt = false;
     }
 
     // =====================================
-    // INPUT
-    // =====================================
-
-    void HandleTyping()
-    {
-        foreach (char c in Input.inputString)
-        {
-            // BACKSPACE
-            if (c == '\b')
-            {
-                HandleBackspace();
-            }
-
-            // IGNORE ENTER
-            else if (
-                c == '\n' ||
-                c == '\r'
-            )
-            {
-                continue;
-            }
-
-            // NORMAL INPUT
-            else
-            {
-                TypeCharacter(c);
-                TriggerShake();
-            }
-        }
-
-        UpdateTextUI();
-
-        // FINISH CURRENT TEXT
-        if (
-            typedText.Length >=
-            targetText.Length
-        )
-        {
-            CompleteCurrentText();
-        }
-    }
-
-    // =====================================
     // TYPE CHARACTER
     // =====================================
 
-    void TypeCharacter(char c)
+    void HandleTyping()
+{
+    foreach (char c in Input.inputString)
     {
-        if (
-            currentIndex >=
-            targetText.Length
+        // BACKSPACE
+        if (c == '\b')
+        {
+            HandleBackspace();
+        }
+
+        // IGNORE ENTER
+        else if (
+            c == '\n' ||
+            c == '\r'
         )
-            return;
-
-
-        char expectedChar =
-            targetText[currentIndex];
-
-        if ( c != expectedChar && currentMode == TypingGameMode.QuickWords)
         {
-            musicManager.PlayIncorrectKeySFX();
-            GenerateRandomWord();
-            return;
+            continue;
         }
 
-        if (c == expectedChar && currentMode == TypingGameMode.QuickWords)
-        {
-            critLetters[currentIndex] =
-                rewardsSystem.RollCritLetter();
-
-                if (critLetters[currentIndex])
-                {
-                    musicManager.PlayCriticalHitSFX();
-                }
-        }
-        typedText += c;
-
-        accuracySystem.RegisterInput(
-            c,
-            expectedChar
-        );
-
-        currentIndex++;
-
-        // AUDIO
-        if (c == expectedChar)
-        {
-            musicManager.PlayCorrectKeySFX();
-        }
+        // NORMAL INPUT
         else
         {
-            musicManager.PlayIncorrectKeySFX();
+            TypeCharacter(c);
+            TriggerShake();
         }
     }
 
+    UpdateTextUI();
+
+    // FINISH CURRENT TEXT
+    if (
+        typedText.Length >=
+        targetText.Length
+    )
+    {
+        CompleteCurrentText();
+    }
+}
+
+void TypeCharacter(char c)
+{
+    if (
+        currentIndex >=
+        targetText.Length
+    )
+        return;
+
+    char expectedChar =
+        targetText[currentIndex];
+
+    if (c != expectedChar && currentMode == TypingGameMode.QuickWords)
+    {
+        musicManager.RepeatGameSFX();
+        StartCoroutine(ShakeThenReset());
+        return;
+    }
+
+    if (c == expectedChar)
+    {
+        critLetters[currentIndex] =
+            rewardsSystem.RollCritLetter();
+
+        if (critLetters[currentIndex])
+        {
+            musicManager.PlayCriticalHitSFX();
+        }
+    }
+
+    typedText += c;
+
+    accuracySystem.RegisterInput(
+        c,
+        expectedChar
+    );
+
+    currentIndex++;
+
+    if (c == expectedChar)
+    {
+        musicManager.PlayCorrectKeySFX();
+    }
+    else
+    {
+        musicManager.PlayIncorrectKeySFX();
+    }
+}
     // =====================================
     // BACKSPACE
     // =====================================
@@ -420,6 +466,7 @@ public bool pendingLongPrompt = false;
         // ---------------------------------
 
          if (currentMode == TypingGameMode.QuickWords)
+         
         {
             if (typedText == targetText)
         {
@@ -486,7 +533,7 @@ public bool pendingLongPrompt = false;
                 targetText[i];
 
             bool isCritLetter =
-                currentMode == TypingGameMode.QuickWords && i < typedText.Length &&
+                i < typedText.Length &&
                 IsCritLetter(i);
 
             // CORRECT
@@ -522,7 +569,7 @@ public bool pendingLongPrompt = false;
             {
                 result += isCritLetter
                     ? $"<color=yellow>{targetChar}</color>"
-                    : $"<color=#777777>{targetChar}</color>";
+                    : $"<color=#1a1a2e>{targetChar}</color>";
             }
         }
 
