@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb8ee776de7ca564db17701c63c73725, type: 3}
+  m_Name: RareWorker
+  m_EditorClassIdentifier: Assembly-CSharp::WorkerData
+  workerName: Rare Worker
+  icon: {fileID: -7675262176189822710, guid: 5e1946bea51c2f74ebd7ce1431a1761a, type: 3}
+  typingSpeed: 60
+  documentLength: 150
+  baseIncome: 30

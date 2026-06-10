@@ -2,7 +2,7 @@
 - Project name: Typing_Game_Prototype
 - Unity version: Unity 6000.4.6f1
 - Active scene:
-  - Name: GameScene
+  - Name: Phase2
   - Tags:
     - Untagged, Respawn, Finish, EditorOnly, MainCamera, Player, GameController
   - Layers:
@@ -10,5 +10,5 @@
 - Active game object:
   - Name: TypingController
   - Tag: Untagged
-  - Layer: Default
+  - Layer: UI
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->
