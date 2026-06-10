@@ -3190,7 +3190,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 781, y: -466}
+  m_AnchoredPosition: {x: 513, y: -416}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &420411739
@@ -3464,8 +3464,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 242.2627, y: -287}
+  m_SizeDelta: {x: 1111.4097, y: 755.1121}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &504421777
 MonoBehaviour:
@@ -3480,15 +3480,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 2058674612456321947, guid: 628847a8090de244ab07d69ca7a274e9, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -3895,7 +3895,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -818, y: -473}
+  m_AnchoredPosition: {x: -663, y: -385}
   m_SizeDelta: {x: 266.5409, y: 53.7662}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &661297894
@@ -5834,7 +5834,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -845, y: 445}
+  m_AnchoredPosition: {x: -706, y: 157}
   m_SizeDelta: {x: 130, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &891715602
@@ -6109,7 +6109,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000030518, y: -121}
+  m_AnchoredPosition: {x: 60, y: -121}
   m_SizeDelta: {x: 1189.1, y: 795.31}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1006192267
@@ -9195,7 +9195,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -847.4634, y: -397}
+  m_AnchoredPosition: {x: -705, y: -311}
   m_SizeDelta: {x: 191.0732, y: 48}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1417341110
@@ -11095,6 +11095,7 @@ MonoBehaviour:
   FinishedWordSFX:
   - {fileID: 8300000, guid: 6745771cbe81a9e418dd1d519f0a309a, type: 3}
   - {fileID: 8300000, guid: 91fd5f558dfd85c4ebb6d2b7dca88d6f, type: 3}
+  MistakeQuickWordSFX: {fileID: 8300000, guid: 300493c73728b454b885ed94ac056999, type: 3}
   MainmenuMusic: {fileID: 0}
   gameplayMusic: {fileID: 8300000, guid: 1704bee0eaf115d4796db49bc4f2f7b1, type: 3}
   NormalPitch: 1
@@ -11197,7 +11198,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 767, y: 436}
+  m_AnchoredPosition: {x: 638, y: 374}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1693542865
@@ -12531,7 +12532,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -124, y: 455}
+  m_AnchoredPosition: {x: -515, y: 377}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1858694868
@@ -12824,6 +12825,8 @@ MonoBehaviour:
   currentPromptRarity: Common
   isGameActive: 1
   shakeDuration: 0.08
+  MistakeShakeDuration: 1.5
+  shakeAmount: 5
   rotationAmount: 2
 --- !u!4 &1863526277
 Transform:

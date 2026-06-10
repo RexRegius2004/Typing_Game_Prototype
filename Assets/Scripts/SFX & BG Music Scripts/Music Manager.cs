@@ -18,6 +18,7 @@ public class MusicManager : MonoBehaviour
     public AudioClip incorrectKeySFX;
     public AudioClip CriticalHitSFX;
     public AudioClip[] FinishedWordSFX;
+    public AudioClip MistakeQuickWordSFX;
 
     [Header("Music")]
     public AudioClip MainmenuMusic;
@@ -85,6 +86,12 @@ public float NormalPitch = 1f;
     public void FinishedWord()
     {
         sfxSource.PlayOneShot(FinishedWordSFX[Random.Range(0, FinishedWordSFX.Length)]);
+        sfxSource.pitch = NormalPitch;
+    }
+
+    public void RepeatGameSFX()
+    {
+        sfxSource.PlayOneShot(MistakeQuickWordSFX);
         sfxSource.pitch = NormalPitch;
     }
 }
