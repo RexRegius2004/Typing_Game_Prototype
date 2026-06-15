@@ -402,13 +402,15 @@ MonoBehaviour:
   sfxSource: {fileID: 1368325860}
   audioMixer: {fileID: 24100000, guid: 9f2e681a055c06f42bf019c3b7e1a9c3, type: 2}
   buttonClickSFX: {fileID: 8300000, guid: bbf467a362c5b9c4a8e49a3ce223173d, type: 3}
-  correctKeySFX: {fileID: 0}
-  incorrectKeySFX: {fileID: 0}
-  CriticalHitSFX: {fileID: 0}
-  FinishedWordSFX: []
-  MistakeQuickWordSFX: {fileID: 0}
+  correctKeySFX: {fileID: 8300000, guid: 18dbd844b90d7e142ab1676b104f74c6, type: 3}
+  incorrectKeySFX: {fileID: 8300000, guid: bbf467a362c5b9c4a8e49a3ce223173d, type: 3}
+  CriticalHitSFX: {fileID: 8300000, guid: 8427b2ffac72a734e8b7e0e6e13ec60f, type: 3}
+  FinishedWordSFX:
+  - {fileID: 0}
+  - {fileID: 0}
+  MistakeQuickWordSFX: {fileID: 8300000, guid: 300493c73728b454b885ed94ac056999, type: 3}
   MainmenuMusic: {fileID: 8300000, guid: 11a3fa42c60a23748ae4f1e12f1ebc63, type: 3}
-  gameplayMusic: {fileID: 0}
+  gameplayMusic: {fileID: 8300000, guid: 1704bee0eaf115d4796db49bc4f2f7b1, type: 3}
   NormalPitch: 1
 --- !u!4 &529027379
 Transform:
