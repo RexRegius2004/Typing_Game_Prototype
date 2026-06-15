@@ -581,60 +581,68 @@ void TypeCharacter(char c)
     // =====================================
 
     public string Randomized_PromptRarity()
+{
+    var allRows =
+        Prompt_Tier.promptList.PromptRarity;
+
+    int randomIndex =
+        Random.Range(
+            0,
+            allRows.Length
+        );
+
+    var rows =
+        allRows[randomIndex];
+
+    float rarityRoll =
+        Random.value;
+
+    string chosenRarity =
+        rows.Common;
+
+    if (rarityRoll < 0.40f)
     {
-        var allRows =
-            Prompt_Tier.promptList.PromptRarity;
-
-        int randomIndex =
-            Random.Range(
-                0,
-                allRows.Length
-            );
-
-        var rows =
-            allRows[randomIndex];
-
-        float rarityRoll =
-            Random.value;
-
-        string chosenRarity =
+        chosenRarity =
             rows.Common;
 
-        if (rarityRoll < 0.50f)
-        {
-            chosenRarity =
-                rows.Common;
-
-            currentPromptRarity =
-                "Common";
-        }
-        else if (rarityRoll < 0.80f)
-        {
-            chosenRarity =
-                rows.Uncommon;
-
-            currentPromptRarity =
-                "Uncommon";
-        }
-        else if (rarityRoll < 0.99f)
-        {
-            chosenRarity =
-                rows.Rare;
-
-            currentPromptRarity =
-                "Rare";
-        }
-        else
-        {
-            chosenRarity =
-                rows.Epic;
-
-            currentPromptRarity =
-                "Epic";
-        }
-
-        return chosenRarity;
+        currentPromptRarity =
+            "Common";
     }
+    else if (rarityRoll < 0.70f)
+    {
+        chosenRarity =
+            rows.Uncommon;
+
+        currentPromptRarity =
+            "Uncommon";
+    }
+    else if (rarityRoll < 0.85f)
+    {
+        chosenRarity =
+            rows.Rare;
+
+        currentPromptRarity =
+            "Rare";
+    }
+    else if (rarityRoll < 0.95f)
+    {
+        chosenRarity =
+            rows.Epic;
+
+        currentPromptRarity =
+            "Epic";
+    }
+    else if (rarityRoll <= 1f)
+    {
+        chosenRarity =
+            rows.Legendary;
+
+        currentPromptRarity =
+            "Legendary";
+    }
+
+    return chosenRarity;
+}
 
     // =====================================
     // TIME UP
