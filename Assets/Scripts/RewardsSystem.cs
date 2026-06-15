@@ -14,7 +14,7 @@ public class RewardsSystem : MonoBehaviour
 
     [Header("Long Prompt Rewards")]
     public int baseReward = 10;
-    public float wordValue = 0.5f;
+    public float wordValue = 1f;
     public float speedValue = 0.25f;
 
     [Header("Difficulty Multipliers")]
