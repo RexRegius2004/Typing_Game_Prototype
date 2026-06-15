@@ -18,10 +18,10 @@ public class RewardsSystem : MonoBehaviour
     public float speedValue = 0.25f;
 
     [Header("Difficulty Multipliers")]
-    public float commonMultiplier = 1f;
-    public float uncommonMultiplier = 1.1f;
-    public float rareMultiplier = 1.25f;
-    public float epicMultiplier = 1.5f;
+    public float commonMultiplier = 1.1f;
+    public float uncommonMultiplier = 1.25f;
+    public float rareMultiplier = 1.50f;
+    public float epicMultiplier = 1.75f;
     public float legendaryMultiplier = 2f;
 
     [Header("Results")]
