@@ -116,6 +116,12 @@ public bool pendingLongPrompt = false;
 
     void Start()
     {
+        if (musicManager == null)
+        {
+            musicManager = FindAnyObjectByType<MusicManager>();
+        }
+
+        
         Prompt_Tier =
             GameObject.Find("Prompt_Manager")
             .GetComponent<Prompt_Rarity>();

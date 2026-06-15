@@ -402,13 +402,15 @@ MonoBehaviour:
   sfxSource: {fileID: 1368325860}
   audioMixer: {fileID: 24100000, guid: 9f2e681a055c06f42bf019c3b7e1a9c3, type: 2}
   buttonClickSFX: {fileID: 8300000, guid: bbf467a362c5b9c4a8e49a3ce223173d, type: 3}
-  correctKeySFX: {fileID: 0}
-  incorrectKeySFX: {fileID: 0}
-  CriticalHitSFX: {fileID: 0}
-  FinishedWordSFX: []
-  MistakeQuickWordSFX: {fileID: 0}
+  correctKeySFX: {fileID: 8300000, guid: 18dbd844b90d7e142ab1676b104f74c6, type: 3}
+  incorrectKeySFX: {fileID: 8300000, guid: bbf467a362c5b9c4a8e49a3ce223173d, type: 3}
+  CriticalHitSFX: {fileID: 8300000, guid: 8427b2ffac72a734e8b7e0e6e13ec60f, type: 3}
+  FinishedWordSFX:
+  - {fileID: 8300000, guid: 91fd5f558dfd85c4ebb6d2b7dca88d6f, type: 3}
+  - {fileID: 8300000, guid: 6745771cbe81a9e418dd1d519f0a309a, type: 3}
+  MistakeQuickWordSFX: {fileID: 8300000, guid: 300493c73728b454b885ed94ac056999, type: 3}
   MainmenuMusic: {fileID: 8300000, guid: 11a3fa42c60a23748ae4f1e12f1ebc63, type: 3}
-  gameplayMusic: {fileID: 0}
+  gameplayMusic: {fileID: 8300000, guid: eead0805130ac3a4690b42e15f44ace1, type: 3}
   NormalPitch: 1
 --- !u!4 &529027379
 Transform:
@@ -418,7 +420,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 529027377}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 1017, y: 547, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -603,12 +605,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 673422026}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 912.0044, y: 477.4562, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 207.28772, y: 24.936218, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 700442734}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &680828538
 GameObject:
@@ -700,6 +702,39 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &700442733
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 700442734}
+  m_Layer: 0
+  m_Name: Managers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &700442734
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 700442733}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 704.7167, y: 452.52, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 673422028}
+  - {fileID: 831495975}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &711103640
@@ -863,7 +898,6 @@ MonoBehaviour:
   musicManager: {fileID: 529027378}
   settingsPanel: {fileID: 1917125114}
   volumePanel: {fileID: 1754537016}
-  audioMixer: {fileID: 24100000, guid: 9f2e681a055c06f42bf019c3b7e1a9c3, type: 2}
   musicSlider: {fileID: 1012897789}
   masterSlider: {fileID: 938164817}
   sfxSlider: {fileID: 1032302839}
@@ -875,12 +909,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 831495973}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 935.5819, y: 673.07983, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 230.86523, y: 220.55984, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 700442734}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &938164817 stripped
 MonoBehaviour:
@@ -2387,6 +2421,5 @@ SceneRoots:
   - {fileID: 680828541}
   - {fileID: 89695145}
   - {fileID: 1520382416}
-  - {fileID: 673422028}
   - {fileID: 529027379}
-  - {fileID: 831495975}
+  - {fileID: 700442734}

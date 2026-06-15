@@ -188,7 +188,10 @@ public void ClosePhase2()
         Phase2.SetActive(false);
         SceneManager.LoadScene("Phase2");
     }
+
+//This is only temporary as Phase 2 is being developed 
+public void ResetGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
 }
-
-
-

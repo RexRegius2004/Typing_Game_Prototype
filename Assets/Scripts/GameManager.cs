@@ -24,11 +24,6 @@ public class GameManager : MonoBehaviour
         //UpgradeManager.ResetUpgrades();
         musicManager.PlayButtonClickSFX();
         SceneManager.LoadScene(1);
-
-        if (SceneManager.GetActiveScene().buildIndex == 0)
-        {
-            PlayerPrefs.DeleteAll();
-        }
     }
 
     public void QuitGame()

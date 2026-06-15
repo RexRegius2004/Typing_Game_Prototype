@@ -1,79 +1,56 @@
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class Settings : MonoBehaviour
 {
     public MusicManager musicManager;
 
-[Header("Game Object References ")]
+    [Header("Game Object References")]
     [SerializeField] private GameObject settingsPanel;
-     [SerializeField] private GameObject volumePanel;
-     public AudioMixer audioMixer;
+    [SerializeField] private GameObject volumePanel;
 
-[Header("Volume Settings")]
+    [Header("Volume Settings")]
     [SerializeField] private Slider musicSlider;
     [SerializeField] private Slider masterSlider;
     [SerializeField] private Slider sfxSlider;
     private float volume;
 
-    void Awake()
-{
-    // Apply saved volumes before any audio plays
-    if (PlayerPrefs.HasKey("MasterVolume"))
-    {
-        float master = PlayerPrefs.GetFloat("MasterVolume");
-        float safeMaster = Mathf.Max(master, 0.0001f);
-        audioMixer.SetFloat("MasterVolume", Mathf.Log10(safeMaster) * 20);
-    }
-
-    if (PlayerPrefs.HasKey("MusicVolume"))
-    {
-        float music = PlayerPrefs.GetFloat("MusicVolume");
-        float safeMusic = Mathf.Max(music, 0.0001f);
-        audioMixer.SetFloat("MusicVolume", Mathf.Log10(safeMusic) * 20);
-    }
-
-    if (PlayerPrefs.HasKey("SFXVolume"))
-    {
-        float sfx = PlayerPrefs.GetFloat("SFXVolume");
-        float safeSfx = Mathf.Max(sfx, 0.0001f);
-        audioMixer.SetFloat("SFXVolume", Mathf.Log10(safeSfx) * 20);
-    }
-}
+    private bool isInitializing = false;
 
     void Start()
     {
+        if (musicManager == null)
+            musicManager = FindAnyObjectByType<MusicManager>();
+
         settingsPanel.SetActive(false);
         volumePanel.SetActive(false);
 
-    if (PlayerPrefs.HasKey("MusicVolume") && PlayerPrefs.HasKey("MasterVolume") && PlayerPrefs.HasKey("SFXVolume"))
-        {
-            LoadVolume();
-        }
-        else
-        {
-         SetMasterVolume();
-         SetMusicVolume();
-         SetSFXVolume();
-        }
-        
+        isInitializing = true;
+
+        masterSlider.value = PlayerPrefs.GetFloat("MasterVolume", 1f);
+        musicSlider.value  = PlayerPrefs.GetFloat("MusicVolume", 1f);
+        sfxSlider.value    = PlayerPrefs.GetFloat("SFXVolume", 1f);
+
+        isInitializing = false;
+
+        isInitializing = false;
+
+Debug.Log("Slider values after load — Master: " + masterSlider.value + 
+          " | Music: " + musicSlider.value + 
+          " | SFX: " + sfxSlider.value);
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (settingsPanel.activeSelf)
-            {
                 CloseSettings();
-            }
             else
             {
                 OpenSettings();
-                Time.timeScale = 0f; // Pause the game when settings are open
+                Time.timeScale = 0f;
             }
         }
     }
@@ -95,20 +72,33 @@ public class Settings : MonoBehaviour
         musicManager.PlayButtonClickSFX();
         settingsPanel.SetActive(false);
         volumePanel.SetActive(false);
-        Time.timeScale = 1f; // Resume the game when settings are closed
+        Time.timeScale = 1f;
     }
 
     public void SetMasterVolume()
+{
+    if (isInitializing)
     {
-        volume = masterSlider.value;
-        float safeVolume = Mathf.Max(volume, 0.0001f); 
-        musicManager.audioMixer.SetFloat("MasterVolume", Mathf.Log10(safeVolume) * 20);
-        PlayerPrefs.SetFloat("MasterVolume", volume);
-        PlayerPrefs.Save();
+        Debug.Log("BLOCKED by isInitializing");
+        return;
     }
+    if (musicManager == null) return;
+    
+    volume = masterSlider.value;
+    Debug.Log("SAVING MasterVolume: " + volume); // add this
+    
+    float safeVolume = Mathf.Max(volume, 0.0001f);
+    musicManager.audioMixer.SetFloat("MasterVolume", Mathf.Log10(safeVolume) * 20);
+    PlayerPrefs.SetFloat("MasterVolume", volume);
+    PlayerPrefs.Save();
+    
+    Debug.Log("SAVED. Verify: " + PlayerPrefs.GetFloat("MasterVolume")); // and this
+}
 
     public void SetMusicVolume()
     {
+        if (isInitializing) return;
+        if (musicManager == null) return;
         volume = musicSlider.value;
         float safeVolume = Mathf.Max(volume, 0.0001f);
         musicManager.audioMixer.SetFloat("MusicVolume", Mathf.Log10(safeVolume) * 20);
@@ -118,6 +108,8 @@ public class Settings : MonoBehaviour
 
     public void SetSFXVolume()
     {
+        if (isInitializing) return;
+        if (musicManager == null) return;
         volume = sfxSlider.value;
         float safeVolume = Mathf.Max(volume, 0.0001f);
         musicManager.audioMixer.SetFloat("SFXVolume", Mathf.Log10(safeVolume) * 20);
@@ -125,22 +117,10 @@ public class Settings : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-    public void LoadVolume()
-    {
-        musicSlider.value = PlayerPrefs.GetFloat("MusicVolume");
-        masterSlider.value = PlayerPrefs.GetFloat("MasterVolume");
-        sfxSlider.value = PlayerPrefs.GetFloat("SFXVolume");
-
-
-        SetMusicVolume();
-        SetMasterVolume();
-        SetSFXVolume();
-    }
-
     public void BacktoMainMenu(string sceneName)
     {
         musicManager.PlayButtonClickSFX();
-        Time.timeScale = 1f; // Ensure the game is not paused when returning to main menu
+        Time.timeScale = 1f;
         UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
     }
 }
