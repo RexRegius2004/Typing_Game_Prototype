@@ -10,6 +10,7 @@ public class Settings : MonoBehaviour
 [Header("Game Object References ")]
     [SerializeField] private GameObject settingsPanel;
      [SerializeField] private GameObject volumePanel;
+     public AudioMixer audioMixer;
 
 [Header("Volume Settings")]
     [SerializeField] private Slider musicSlider;
@@ -18,13 +19,29 @@ public class Settings : MonoBehaviour
     private float volume;
 
     void Awake()
+{
+    // Apply saved volumes before any audio plays
+    if (PlayerPrefs.HasKey("MasterVolume"))
     {
-        if (musicManager == null)
-        {
-            musicManager = FindAnyObjectByType<MusicManager>();
-        }
-
+        float master = PlayerPrefs.GetFloat("MasterVolume");
+        float safeMaster = Mathf.Max(master, 0.0001f);
+        audioMixer.SetFloat("MasterVolume", Mathf.Log10(safeMaster) * 20);
     }
+
+    if (PlayerPrefs.HasKey("MusicVolume"))
+    {
+        float music = PlayerPrefs.GetFloat("MusicVolume");
+        float safeMusic = Mathf.Max(music, 0.0001f);
+        audioMixer.SetFloat("MusicVolume", Mathf.Log10(safeMusic) * 20);
+    }
+
+    if (PlayerPrefs.HasKey("SFXVolume"))
+    {
+        float sfx = PlayerPrefs.GetFloat("SFXVolume");
+        float safeSfx = Mathf.Max(sfx, 0.0001f);
+        audioMixer.SetFloat("SFXVolume", Mathf.Log10(safeSfx) * 20);
+    }
+}
 
     void Start()
     {

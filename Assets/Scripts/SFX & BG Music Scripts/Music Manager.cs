@@ -29,31 +29,55 @@ public class MusicManager : MonoBehaviour
 [Header("Pitch")]
 public float NormalPitch = 1f;
 
-
-    void Start()
+    [System.Obsolete]
+    void Awake()
+{
+    // Singleton - persist across scenes
+    if (FindObjectsByType<MusicManager>(FindObjectsSortMode.None).Length > 1)
     {
-        // Set initial music
-        musicSource.clip = gameplayMusic;
-        musicSource.Play(); 
-
-        musicSource.clip = MainmenuMusic;
-        musicSource.Play();
-
-        if (musicSource.clip == null)
-        {
-            if (gameplayMusic != null)
-            {
-                musicSource.clip = gameplayMusic;
-                musicSource.Play();
-            }
-            else if (MainmenuMusic != null)
-            {
-                musicSource.clip = MainmenuMusic;
-                musicSource.Play();
-            }
-        }
-        
+        Destroy(gameObject);
+        return;
     }
+
+    DontDestroyOnLoad(gameObject);
+
+    // Apply saved volumes BEFORE any audio plays
+    if (PlayerPrefs.HasKey("MasterVolume"))
+    {
+        float master = Mathf.Max(PlayerPrefs.GetFloat("MasterVolume"), 0.0001f);
+        audioMixer.SetFloat("MasterVolume", Mathf.Log10(master) * 20);
+    }
+
+    if (PlayerPrefs.HasKey("MusicVolume"))
+    {
+        float music = Mathf.Max(PlayerPrefs.GetFloat("MusicVolume"), 0.0001f);
+        audioMixer.SetFloat("MusicVolume", Mathf.Log10(music) * 20);
+    }
+
+    if (PlayerPrefs.HasKey("SFXVolume"))
+    {
+        float sfx = Mathf.Max(PlayerPrefs.GetFloat("SFXVolume"), 0.0001f);
+        audioMixer.SetFloat("SFXVolume", Mathf.Log10(sfx) * 20);
+    }
+}
+
+void Start()
+{
+    // Play the right music per scene
+    string currentScene = 
+        UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+
+    if (currentScene == "MainMenu") // replace with your actual scene name
+    {
+        musicSource.clip = MainmenuMusic;
+    }
+    else
+    {
+        musicSource.clip = gameplayMusic;
+    }
+
+    musicSource.Play();
+}
 
     // Update is called once per frame
     void Update()

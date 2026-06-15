@@ -12895,6 +12895,7 @@ MonoBehaviour:
   musicManager: {fileID: 1669817049}
   settingsPanel: {fileID: 177696993}
   volumePanel: {fileID: 177696997}
+  audioMixer: {fileID: 24100000, guid: 9f2e681a055c06f42bf019c3b7e1a9c3, type: 2}
   musicSlider: {fileID: 177696994}
   masterSlider: {fileID: 177696996}
   sfxSlider: {fileID: 177696995}
