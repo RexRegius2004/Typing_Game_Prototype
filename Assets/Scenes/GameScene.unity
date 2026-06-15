@@ -974,12 +974,12 @@ MonoBehaviour:
   minimumQuickReward: 1
   letterValue: 1
   baseReward: 10
-  wordValue: 0.5
-  speedValue: 0.25
-  commonMultiplier: 1
-  uncommonMultiplier: 1.1
-  rareMultiplier: 1.25
-  epicMultiplier: 1.5
+  wordValue: 1
+  speedValue: 0.5
+  commonMultiplier: 1.1
+  uncommonMultiplier: 1.25
+  rareMultiplier: 1.5
+  epicMultiplier: 1.75
   legendaryMultiplier: 2
   finalMoney: 0
   difficultyMultiplier: 0
@@ -9196,7 +9196,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -705, y: -311}
+  m_AnchoredPosition: {x: 627, y: -326}
   m_SizeDelta: {x: 191.0732, y: 48}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1417341110
