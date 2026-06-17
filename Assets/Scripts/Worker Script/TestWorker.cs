@@ -8,6 +8,7 @@ public class TestWorker : MonoBehaviour
     public WorkerData epic;
     public WorkerData Legendary;
     public WorkerManager workerManager;
+    public ReputationSystem reputationSystem;
 
     public GameObject debugPanel;
 
@@ -31,25 +32,34 @@ public class TestWorker : MonoBehaviour
     }
     public void AddCommonWorker()
     {
-    workerManager.HireWorker(common);
+        workerManager.HireWorker(common);
     }
 
     public void AddUncommonWorker()
     {
-    workerManager.HireWorker(uncommon);
+        workerManager.HireWorker(uncommon);
     }
     public void AddRareWorker()
     {
-    workerManager.HireWorker(rare);
+        workerManager.HireWorker(rare);
     }
 
     public void AddEpicWorker()
     {
-    workerManager.HireWorker(epic);
+        workerManager.HireWorker(epic);
     }
 
     public void AddLegendaryWorker()
     {
-    workerManager.HireWorker(Legendary);
+        workerManager.HireWorker(Legendary);
+    }
+
+    public void DecreaseReputation()
+    {
+        reputationSystem.SubtractReputation(1);
+    }
+    public void IncreaseReputation()
+    {
+        reputationSystem.AddReputation(1);
     }
 }

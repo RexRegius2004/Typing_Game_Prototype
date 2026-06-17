@@ -13,4 +13,7 @@ public class WorkerData : ScriptableObject
 
     [Header("Economy")]
     public float baseIncome = 10f;
+
+    [Header("Rarity")]
+    public WorkerRarity rarity;
 }

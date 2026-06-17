@@ -17,3 +17,4 @@ MonoBehaviour:
   typingSpeed: 80
   documentLength: 150
   baseIncome: 40
+  rarity: 3

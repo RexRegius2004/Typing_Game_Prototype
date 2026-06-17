@@ -9,9 +9,11 @@ public class WorkerManager : MonoBehaviour
     public GridLayoutGroup grid;
 
     public CurrencySystem currencySystem;
+    public HireSystem hireSystem;
+    public HirePopupUI popup;
 
     private List<WorkerInstance> workers = new List<WorkerInstance>();
-    
+
     void Update()
     {
         float dt = Time.deltaTime;
@@ -29,6 +31,28 @@ public class WorkerManager : MonoBehaviour
             .Bind(instance);
 
         UpdateGrid();
+    }
+
+    public void HireRandomWorker()
+    {
+        WorkerData worker = hireSystem.RollWorker();
+
+        if (worker == null)
+        {
+            Debug.LogWarning("No worker rolled!");
+            return;
+        }
+
+        // Add to your system
+        HireWorker(worker);
+
+        // Show popup if exists
+        if (popup != null)
+        {
+            popup.Show(worker);
+        }
+
+        Debug.Log("Hired: " + worker.workerName + " (" + worker.rarity + ")");
     }
 
     void UpdateGrid()
@@ -49,7 +73,6 @@ public class WorkerManager : MonoBehaviour
         float spacingX = grid.spacing.x;
         float spacingY = grid.spacing.y;
 
-        // subtract spacing so it doesn't overflow
         float cellWidth = (totalWidth - (columns - 1) * spacingX) / columns;
         float cellHeight = (totalHeight - (rows - 1) * spacingY) / rows;
 
