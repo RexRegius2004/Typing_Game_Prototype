@@ -14,6 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WorkerData
   workerName: Common Worker
   icon: {fileID: -7675262176189822710, guid: 5e1946bea51c2f74ebd7ce1431a1761a, type: 3}
-  typingSpeed: 20
-  documentLength: 150
-  baseIncome: 10
+  rarity: 0
+  typingSpeed: 5
+  reward: 10
+  successRate: 0.65
+  burnoutChance: 0.5
+  burnoutTolerance: -0.2
+  burnoutCapacity: 60
+  recoveryRate: 5

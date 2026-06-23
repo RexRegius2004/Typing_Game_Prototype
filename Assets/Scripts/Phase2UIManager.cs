@@ -7,6 +7,7 @@ public class Phase2_UIManager : MonoBehaviour
     public TextMeshProUGUI reputationUI;
     public CurrencySystem currencySystem;
     public ReputationSystem reputationSystem;
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {

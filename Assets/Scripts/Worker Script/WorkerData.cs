@@ -1,19 +1,21 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "WorkerData", menuName = "Scriptable Objects/WorkerData")]
+[CreateAssetMenu(menuName = "Idle/Worker Data")]
 public class WorkerData : ScriptableObject
 {
     [Header("Identity")]
     public string workerName;
     public Sprite icon;
-
-    [Header("Typing Stats")]
-    public float typingSpeed = 5f; // characters per second
-    public float documentLength = 100f;
-
-    [Header("Economy")]
-    public float baseIncome = 10f;
-
-    [Header("Rarity")]
     public WorkerRarity rarity;
+
+    [Header("Work Stats")]
+    public float typingSpeed = 1f;
+    public int reward = 10;
+    [Range(0f, 1f)] public float successRate = 0.8f;
+
+    [Header("Burnout")]
+    [Range(0f, 1f)] public float burnoutChance = 0.05f;   
+    public float burnoutTolerance = 0f;                  
+    public float burnoutCapacity = 100f;                 
+    public float recoveryRate = 10f;                    
 }
