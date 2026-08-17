@@ -129,7 +129,7 @@ public class UIManager : MonoBehaviour
     {
         if (UpgradePanel != null)
         {
-            musicManager.PlayButtonClickSFX();
+           // musicManager.PlayButtonClickSFX();
             UpgradePanel.SetActive(!UpgradePanel.activeSelf); 
             Time.timeScale = UpgradePanel.activeSelf ? 0 : 1; 
             // Pause game when panel is open and resume when closed

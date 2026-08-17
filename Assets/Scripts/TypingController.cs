@@ -81,6 +81,7 @@ public bool pendingLongPrompt = false;
     public TimerScript timerScript;
     public UIManager uiManager;
     public MusicManager musicManager;
+    public WordAssembler wordAssembler;
 
     // =====================================
     // PROMPT RARITY
@@ -254,8 +255,8 @@ public bool pendingLongPrompt = false;
         originalPos;
 
     GenerateRandomWord();
-
-    isGameActive = true;
+        wordAssembler.Erase();
+        isGameActive = true;
 }
 
     IEnumerator ShakeTextDuration(float duration)
@@ -376,6 +377,9 @@ public bool pendingLongPrompt = false;
         // NORMAL INPUT
         else
         {
+                Debug.Log(c);
+                //Spawn Letter Here
+            wordAssembler.SpawnLetter(c);
             TypeCharacter(c);
             TriggerShake();
         }
@@ -390,6 +394,7 @@ public bool pendingLongPrompt = false;
     )
     {
         CompleteCurrentText();
+        wordAssembler.Erase();
     }
 }
 
@@ -406,7 +411,8 @@ void TypeCharacter(char c)
 
     if (c != expectedChar && currentMode == TypingGameMode.QuickWords)
     {
-        musicManager.RepeatGameSFX();
+        
+        // musicManager.RepeatGameSFX();
         StartCoroutine(ShakeThenReset());
         return;
     }
@@ -433,11 +439,12 @@ void TypeCharacter(char c)
 
     if (c == expectedChar)
     {
-        musicManager.PlayCorrectKeySFX();
+       // musicManager.PlayCorrectKeySFX();
     }
     else
     {
         musicManager.PlayIncorrectKeySFX();
+        
     }
 }
     // =====================================
@@ -465,7 +472,7 @@ void TypeCharacter(char c)
     void CompleteCurrentText()
     {
         accuracySystem.CalculateFinalAccuracy();
-        musicManager.FinishedWord();
+       // musicManager.FinishedWord();
 
         // ---------------------------------
         // QUICK WORD MODE
@@ -538,6 +545,25 @@ void TypeCharacter(char c)
             char targetChar =
                 targetText[i];
 
+            result += targetChar;
+        }
+
+        targetTextUI.text = result;
+    }
+
+    void OldUpdateTextUI()
+    {
+        string result = "";
+
+        for (
+            int i = 0;
+            i < targetText.Length;
+            i++
+        )
+        {
+            char targetChar =
+                targetText[i];
+
             bool isCritLetter =
                 i < typedText.Length &&
                 IsCritLetter(i);
@@ -553,7 +579,7 @@ void TypeCharacter(char c)
                     result += isCritLetter
                         ? $"<color=yellow>{targetChar}</color>"
                         : $"<color=white>{targetChar}</color>";
-                    
+
                 }
                 else
                 {
