@@ -379,7 +379,6 @@ public bool pendingLongPrompt = false;
         {
                 Debug.Log(c);
                 //Spawn Letter Here
-            wordAssembler.SpawnLetter(c);
             TypeCharacter(c);
             TriggerShake();
         }
@@ -424,8 +423,14 @@ void TypeCharacter(char c)
 
         if (critLetters[currentIndex])
         {
+            wordAssembler.SpawnCriticalLetter(c);
             musicManager.PlayCriticalHitSFX();
-        }
+
+            }
+            else
+            {
+                wordAssembler.SpawnLetter(c);
+            }
     }
 
     typedText += c;
@@ -439,7 +444,8 @@ void TypeCharacter(char c)
 
     if (c == expectedChar)
     {
-       // musicManager.PlayCorrectKeySFX();
+            // musicManager.PlayCorrectKeySFX();
+
     }
     else
     {

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-
+using DG.Tweening;
 public class WordAssembler : MonoBehaviour
 {
     [SerializeField] GameObject LetterPrefab;
@@ -24,6 +24,18 @@ public class WordAssembler : MonoBehaviour
         GameObject p=Instantiate(LetterPrefab);
         p.GetComponent<TextMeshProUGUI>().text=c.ToString();
         p.transform.SetParent(Parent.transform);
+        p.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutBounce);
+        Word.Add(p);
+    }
+    public void SpawnCriticalLetter(char c)
+    {
+        GameObject p = Instantiate(LetterPrefab);
+        TextMeshProUGUI text = p.GetComponent<TextMeshProUGUI>();
+        text.text=c.ToString();
+        text.color = Color.gold;
+      
+        p.transform.SetParent(Parent.transform);
+        p.transform.DOScale(Vector3.one, 0.15f).SetEase(Ease.OutElastic);
         Word.Add(p);
     }
     public void Erase()

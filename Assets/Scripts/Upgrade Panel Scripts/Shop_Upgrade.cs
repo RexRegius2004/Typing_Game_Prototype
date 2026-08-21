@@ -56,7 +56,7 @@ void Update()
             //Open Panel to inform player they don't have enough money
         }
 
-        musicManager.PlayButtonClickSFX();
+        //musicManager.PlayButtonClickSFX();
         currencySystem.Money -= cost;
         upgradeManager.AddUpgrade(upgradeData[0]);
         RefreshUpgradeCosts();

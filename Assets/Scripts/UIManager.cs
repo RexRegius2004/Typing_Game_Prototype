@@ -179,7 +179,7 @@ public void PlayerPromotion()
     {
         if (currencySystem.Money >= 1000)
         {
-            Phase2.SetActive(true);
+            //Phase2.SetActive(true);
         }
     }
 

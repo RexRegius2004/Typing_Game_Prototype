@@ -22,8 +22,8 @@ public class GameManager : MonoBehaviour
     public void PlayAgain()
     {
         //UpgradeManager.ResetUpgrades();
-        musicManager.PlayButtonClickSFX();
-        SceneManager.LoadScene(1);
+        //musicManager.PlayButtonClickSFX();
+        //SceneManager.LoadScene(1);
     }
 
     public void QuitGame()
