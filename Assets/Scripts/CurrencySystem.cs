@@ -5,14 +5,22 @@ public class CurrencySystem : MonoBehaviour
     [Header("Money Settings")]
     public int Money = 0;
 
+    [SerializeField] RandomSpawner moneySpawner;
+
     void Start()
     {
         LoadMoney();
+        if (moneySpawner == null)
+            moneySpawner = FindAnyObjectByType<RandomSpawner>();
     }
+
     public void AddMoney(int money)
     {
         Money += money;
         SaveMoney(Money);
+
+        if (money > 0 && moneySpawner != null)
+            moneySpawner.Spawn(money);
     }
 
     public void SubtractMoney(int money)

@@ -32,6 +32,11 @@ public class RewardsSystem : MonoBehaviour
     public int criticalMoney;
     internal object wordsTyped;
 
+    [Header("Word Streak")]
+    public float streakMultiplier = 1f;
+    [SerializeField] float baseStreak = 1f;
+    [SerializeField] float streakStep = 0.05f;
+
 // =====================================
 // LAST RUN RESULTS (UI SAFE)
 // =====================================
@@ -131,6 +136,12 @@ public float lastDifficultyMultiplier;
 
         reward *=
             upgradeManager.ConsistencyBonus();
+
+        // ---------------------------------
+        // STREAK MULTIPLIER
+        // ---------------------------------
+
+        reward *= streakMultiplier;
 
         // ---------------------------------
         // MINIMUM REWARD
@@ -268,5 +279,15 @@ public float lastDifficultyMultiplier;
             default:
                 return 1f;
         }
+    }
+
+    public void AddStreak()
+    {
+        streakMultiplier += streakStep;
+    }
+
+    public void ResetStreak()
+    {
+        streakMultiplier = baseStreak;
     }
 }

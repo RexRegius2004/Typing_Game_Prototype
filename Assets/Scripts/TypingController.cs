@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
-using System.Collections; // Add this at the top if not already present
+using DG.Tweening;
 
 public class TypingController : MonoBehaviour
 {
@@ -17,39 +17,25 @@ public bool pendingLongPrompt = false;
     // QUICK WORD MODE
     // =====================================
 
-    [Header("Quick Words")]
+    [Header("Quick Words By Length")]
+    [Tooltip("Lengths unlocked at the start of the game")]
+    [SerializeField] List<int> startingUnlockedLengths = new List<int>() { 3, 4, 5 };
 
-    [Tooltip("Small words used in fast mode")]
-    public List<string> quickWords =
-        new List<string>()
-        {
-            "email",
-            "meeting",
-            "report",
-            "invoice",
-            "deadline",
-            "urgent",
-            "schedule",
-            "manager",
-            "client",
-            "memo",
-            "signature",
-            "attachment",
-            "project",
-            "budget",
-            "presentation",
-            "feedback",
-            "proposal",
-            "strategy",
-            "marketing",
-            "sales",
-            "nda"
-        };
+    public List<string> words3 = new List<string>() { "nda", "pay", "tax", "ceo", "hr" };
+    public List<string> words4 = new List<string>() { "memo", "deal", "file", "task", "loan" };
+    public List<string> words5 = new List<string>() { "email", "sales", "audit", "draft", "inbox" };
+    public List<string> words6 = new List<string>() { "report", "urgent", "client", "budget", "office" };
+    public List<string> words7 = new List<string>() { "meeting", "invoice", "manager", "project", "payroll" };
+    public List<string> words8 = new List<string>() { "deadline", "schedule", "feedback", "proposal", "strategy" };
+    public List<string> words9 = new List<string>() { "signature", "marketing", "inventory", "workspace" };
+    public List<string> words10 = new List<string>() { "attachment", "accounting", "management", "department" };
 
     [Tooltip("Seconds between long prompt offers in quick mode")]
     public float longPromptOfferInterval = 10f;
 
     private float longPromptOfferTimer = 0f;
+    private readonly HashSet<int> unlockedLengths = new HashSet<int>();
+    private readonly List<string> mainWordPool = new List<string>();
 
     // =====================================
     // CURRENT TEXT
@@ -68,6 +54,14 @@ public bool pendingLongPrompt = false;
 
     [Header("UI")]
     public TextMeshProUGUI targetTextUI;
+
+    [Header("Target Text Bounce")]
+    [SerializeField] float targetBumpStrength = 0.25f;
+    [SerializeField] float targetBumpDuration = 0.35f;
+    [SerializeField] int targetBumpVibrato = 6;
+    [SerializeField] float targetBumpElasticity = 0.6f;
+
+    string lastTargetDisplayed;
 
     // =====================================
     // REFERENCES
@@ -105,15 +99,27 @@ public bool pendingLongPrompt = false;
     // =====================================
 
     // =====================================
-    // WORD SHAKE
+    // INCORRECT SHAKE
     // =====================================
-    [Header("Shake Words")]
-// Make it a subtle shake horizontal
-    public float shakeDuration = 0.2f;
-    public float MistakeShakeDuration = 0.01f;
-    public float shakeAmount = 5f;
-    public float rotationAmount;
-    private Coroutine shakeCoroutine;
+    [Header("Incorrect Shake")]
+    [SerializeField] float mistakeShakeDuration = 0.4f;
+    [SerializeField] float mistakeShakeStrength = 14f;
+    [SerializeField] int mistakeShakeVibrato = 22;
+    [SerializeField] float mistakeShakeRandomness = 90f;
+    [SerializeField] Color mistakeColor = Color.red;
+
+    [Header("WPM")]
+    public float currentWPM;
+    int charsTyped;
+    float typingElapsed;
+    bool wpmTracking;
+    bool wpmClockRunning;
+
+    [Header("Word Timer")]
+    [SerializeField] float wordTimeLimit = 5f;
+    [SerializeField] TextMeshProUGUI wordTimerTextUI;
+    float wordTimer;
+    bool wordTimerActive;
 
     void Start()
     {
@@ -127,6 +133,7 @@ public bool pendingLongPrompt = false;
             GameObject.Find("Prompt_Manager")
             .GetComponent<Prompt_Rarity>();
 
+        InitUnlockedWordLengths();
         StartQuickWordMode();
 
         timerScript.OnTimerEnd +=
@@ -144,9 +151,17 @@ public bool pendingLongPrompt = false;
     {
         UpdateLongPromptOfferTimer();
 
+        // Only count time while actively typing a word (not gaps / timeouts)
+        if (wpmTracking && wpmClockRunning)
+        {
+            typingElapsed += Time.deltaTime;
+            UpdateWPM();
+        }
+
         if (!isGameActive)
             return;
 
+        UpdateWordTimer();
         HandleTyping();
     }
 
@@ -159,6 +174,7 @@ public bool pendingLongPrompt = false;
         currentMode =
             TypingGameMode.QuickWords;
 
+        ResetWPM();
         GenerateRandomWord();
 
         Debug.Log("QUICK MODE");
@@ -172,6 +188,8 @@ public bool pendingLongPrompt = false;
     {
         currentMode =
             TypingGameMode.LongPrompt;
+
+        StopWordTimer();
 
         targetText =
             Randomized_PromptRarity();
@@ -190,111 +208,146 @@ public bool pendingLongPrompt = false;
 
     public void GenerateRandomWord()
     {
-        int randomIndex = Random.Range( 0, quickWords.Count );
+        if (mainWordPool.Count == 0)
+            RebuildMainWordPool();
 
-        targetText = quickWords[randomIndex];
+        if (mainWordPool.Count == 0)
+            return;
 
+        int randomIndex = Random.Range(0, mainWordPool.Count);
+
+        // Never repeat the previous word when another option exists
+        if (mainWordPool.Count > 1 && !string.IsNullOrEmpty(targetText))
+        {
+            int attempts = 0;
+            while (mainWordPool[randomIndex] == targetText && attempts < 10)
+            {
+                randomIndex = Random.Range(0, mainWordPool.Count);
+                attempts++;
+            }
+        }
+
+        targetText = mainWordPool[randomIndex];
+        mainWordPool.RemoveAt(randomIndex);
 
         ResetTyping();
+        PauseWpmClock();
 
         critLetters = new bool[targetText.Length];
 
         UpdateTextUI();
+        StartWordTimer();
     }
 
-    // =====================================
-    // WORD SHAKE
-    // =====================================
-
-    IEnumerator ShakeText() 
+    void InitUnlockedWordLengths()
     {
-        float elapsed = 0f;
-        Vector3 originalPos = targetTextUI.rectTransform.localPosition;
-        while (elapsed < shakeDuration)
+        unlockedLengths.Clear();
+
+        if (startingUnlockedLengths == null || startingUnlockedLengths.Count == 0)
         {
-            float x =
-                Random.Range(
-                    -rotationAmount,
-                    rotationAmount
-                );
-
-            targetTextUI.rectTransform.localPosition =
-                new Vector3(
-                originalPos.x + x,
-                originalPos.y,
-                originalPos.z 
-                );
-
-            elapsed += Time.deltaTime;
-
-            yield return null;
+            unlockedLengths.Add(3);
+            unlockedLengths.Add(4);
+            unlockedLengths.Add(5);
+        }
+        else
+        {
+            foreach (int length in startingUnlockedLengths)
+            {
+                if (length >= 3 && length <= 10)
+                    unlockedLengths.Add(length);
+            }
         }
 
-        targetTextUI.rectTransform.localPosition = originalPos;
+        RebuildMainWordPool();
     }
 
-    IEnumerator ShakeThenReset()
-{
-    isGameActive = false;
-
-    Vector3 originalPos =
-        targetTextUI.rectTransform.localPosition;
-
-    // Left
-    targetTextUI.rectTransform.localPosition =
-        originalPos + Vector3.left * 6f;
-    yield return new WaitForSeconds(0.15f);
-
-    // Right
-    targetTextUI.rectTransform.localPosition =
-        originalPos + Vector3.right * 6f;
-    yield return new WaitForSeconds(0.15f);
-
-    // Back
-    targetTextUI.rectTransform.localPosition =
-        originalPos;
-
-    GenerateRandomWord();
-        wordAssembler.Erase();
-        isGameActive = true;
-}
-
-    IEnumerator ShakeTextDuration(float duration)
-{
-    Vector3 originalPos = targetTextUI.rectTransform.localPosition;
-
-    float elapsed = 0f;
-    float amplitude = 8f;
-
-    while (elapsed < duration)
+    public bool UnlockWordLength(int length)
     {
-        elapsed += Time.deltaTime;
+        if (length < 3 || length > 10)
+            return false;
 
-        float x =
-            Mathf.Sin(elapsed * 80f) *
-            amplitude *
-            (1f - elapsed / duration);
+        if (!unlockedLengths.Add(length))
+            return false; // already unlocked
 
-        targetTextUI.rectTransform.localPosition =
-            originalPos + new Vector3(x, 0f, 0f);
+        List<string> words = GetWordListForLength(length);
+        if (words != null && words.Count > 0)
+            mainWordPool.AddRange(words);
 
-        yield return null;
+        Debug.Log($"Unlocked {length}-letter words. Main pool size: {mainWordPool.Count}");
+        return true;
     }
 
-    targetTextUI.rectTransform.localPosition = originalPos;
-}
-
-    void TriggerShake() 
+    public bool IsWordLengthUnlocked(int length)
     {
-        if (shakeCoroutine != null)
-            StopCoroutine(shakeCoroutine);
-
-        shakeCoroutine = StartCoroutine(ShakeText());
+        return unlockedLengths.Contains(length);
     }
 
-    // =====================================
-    // WORD SHAKE
-    // =====================================
+    void RebuildMainWordPool()
+    {
+        mainWordPool.Clear();
+
+        foreach (int length in unlockedLengths)
+        {
+            List<string> words = GetWordListForLength(length);
+            if (words == null || words.Count == 0)
+                continue;
+
+            mainWordPool.AddRange(words);
+        }
+    }
+
+    List<string> GetWordListForLength(int length)
+    {
+        switch (length)
+        {
+            case 3: return words3;
+            case 4: return words4;
+            case 5: return words5;
+            case 6: return words6;
+            case 7: return words7;
+            case 8: return words8;
+            case 9: return words9;
+            case 10: return words10;
+            default: return null;
+        }
+    }
+
+    void PlayIncorrectShakeThenReset()
+    {
+        if (targetTextUI == null) return;
+
+        isGameActive = false;
+        PauseWpmClock();
+
+        RectTransform rt = targetTextUI.rectTransform;
+        Color originalColor = targetTextUI.color;
+
+        rt.DOKill();
+        targetTextUI.DOKill();
+
+        Sequence seq = DOTween.Sequence();
+        seq.SetTarget(rt);
+        seq.Append(
+            rt.DOShakeAnchorPos(
+                mistakeShakeDuration,
+                new Vector2(mistakeShakeStrength, 0f),
+                mistakeShakeVibrato,
+                mistakeShakeRandomness,
+                false,
+                true
+            )
+        );
+        seq.Join(targetTextUI.DOColor(mistakeColor, mistakeShakeDuration));
+        seq.OnComplete(() =>
+        {
+            targetTextUI.color = originalColor;
+            rewardsSystem.ResetStreak();
+            GenerateRandomWord();
+            wordAssembler.Erase();
+            isGameActive = true;
+        });
+    }
+
     bool IsCritLetter(int index)
     {
         return critLetters != null &&
@@ -380,7 +433,6 @@ public bool pendingLongPrompt = false;
                 Debug.Log(c);
                 //Spawn Letter Here
             TypeCharacter(c);
-            TriggerShake();
         }
     }
 
@@ -410,11 +462,13 @@ void TypeCharacter(char c)
 
     if (c != expectedChar && currentMode == TypingGameMode.QuickWords)
     {
-        
         // musicManager.RepeatGameSFX();
-        StartCoroutine(ShakeThenReset());
+        RegisterTypedChar();
+        PlayIncorrectShakeThenReset();
         return;
     }
+
+    RegisterTypedChar();
 
     if (c == expectedChar)
     {
@@ -498,11 +552,14 @@ void TypeCharacter(char c)
                     critLetters
                 );
 
+            rewardsSystem.AddStreak();
+
             Debug.Log(
                 "WORD COMPLETE +" + reward);
         }
         else
             {
+                rewardsSystem.ResetStreak();
                 Debug.Log("MISTYPED WORD: No Reward");
             }
 
@@ -555,6 +612,105 @@ void TypeCharacter(char c)
         }
 
         targetTextUI.text = result;
+
+        if (targetText != lastTargetDisplayed)
+        {
+            lastTargetDisplayed = targetText;
+            BounceTargetText();
+        }
+    }
+
+    void BounceTargetText()
+    {
+        if (targetTextUI == null) return;
+
+        RectTransform rt = targetTextUI.rectTransform;
+        rt.DOKill(false);
+        rt.localScale = Vector3.one;
+        rt.DOPunchScale(Vector3.one * targetBumpStrength, targetBumpDuration, targetBumpVibrato, targetBumpElasticity);
+    }
+
+    void ResetWPM()
+    {
+        charsTyped = 0;
+        typingElapsed = 0f;
+        currentWPM = 0f;
+        wpmTracking = false;
+        wpmClockRunning = false;
+    }
+
+    void PauseWpmClock()
+    {
+        wpmClockRunning = false;
+    }
+
+    void RegisterTypedChar()
+    {
+        wpmTracking = true;
+        wpmClockRunning = true;
+        charsTyped++;
+        UpdateWPM();
+    }
+
+    void UpdateWPM()
+    {
+        if (typingElapsed <= 0.01f)
+        {
+            currentWPM = 0f;
+            return;
+        }
+
+        // Typical typing-test WPM: 5 letters = 1 word
+        float minutes = typingElapsed / 60f;
+        currentWPM = (charsTyped / 5f) / minutes;
+    }
+
+    void StartWordTimer()
+    {
+        if (currentMode != TypingGameMode.QuickWords)
+        {
+            wordTimerActive = false;
+            return;
+        }
+
+        wordTimer = wordTimeLimit;
+        wordTimerActive = true;
+        UpdateWordTimerUI();
+    }
+
+    void StopWordTimer()
+    {
+        wordTimerActive = false;
+    }
+
+    void UpdateWordTimer()
+    {
+        if (!wordTimerActive || currentMode != TypingGameMode.QuickWords)
+            return;
+
+        wordTimer -= Time.deltaTime;
+        UpdateWordTimerUI();
+
+        if (wordTimer > 0f)
+            return;
+
+        wordTimer = 0f;
+        wordTimerActive = false;
+        OnWordTimerExpired();
+    }
+
+    void OnWordTimerExpired()
+    {
+        PauseWpmClock();
+        rewardsSystem.ResetStreak();
+        wordAssembler.Erase();
+        GenerateRandomWord();
+    }
+
+    void UpdateWordTimerUI()
+    {
+        if (wordTimerTextUI == null) return;
+        wordTimerTextUI.text = $"{Mathf.CeilToInt(Mathf.Max(0f, wordTimer))}";
     }
 
     void OldUpdateTextUI()

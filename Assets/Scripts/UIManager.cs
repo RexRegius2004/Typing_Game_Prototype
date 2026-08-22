@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Text;
 using UnityEngine.SceneManagement;
+using DG.Tweening;
 
 
 public class UIManager : MonoBehaviour
@@ -17,6 +18,18 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI currencyTextUI;
     public TextMeshProUGUI currencyTextUI2;
     public TextMeshProUGUI P_RarityTextUI;
+    public TextMeshProUGUI streakTextUI;
+    public TextMeshProUGUI wpmTextUI;
+
+    [Header("Streak Scale")]
+    [SerializeField] float streakMinScale = 1f;
+    [SerializeField] float streakMaxScale = 4f;
+    [SerializeField] float streakScaleTweenDuration = 0.35f;
+    [SerializeField] float streakPulseThreshold = 1.5f;
+    [SerializeField] float streakPulseAmount = 0.1f;
+    [SerializeField] float streakPulseDuration = 0.75f;
+
+    float lastStreakDisplayed = -1f;
 
 
     
@@ -30,7 +43,24 @@ public class UIManager : MonoBehaviour
     public MusicManager musicManager;
     public GameObject longPromptChoiceUI;
     public TypingController typingController;
-  
+
+    [Header("Currency Change Feedback")]
+    [SerializeField] float bumpStrength = 0.25f;
+    [SerializeField] float bumpDuration = 0.35f;
+    [SerializeField] int bumpVibrato = 6;
+    [SerializeField] float bumpElasticity = 0.6f;
+    [SerializeField] float rotateStrength = 12f;
+    [SerializeField] float rotateDuration = 0.35f;
+    [SerializeField] int rotateVibrato = 8;
+    [SerializeField] float rotateElasticity = 0.5f;
+    [SerializeField] float shakeDuration = 0.35f;
+    [SerializeField] float shakeStrength = 6f;
+    [SerializeField] int shakeVibrato = 18;
+    [SerializeField] float shakeRandomness = 90f;
+
+    int lastMoneyDisplayed;
+    bool currencyUIReady;
+
 
 
     void Awake()
@@ -69,6 +99,8 @@ public class UIManager : MonoBehaviour
         UpdateUpgradeUI();
         UpdateCurrencyUI();
         UpdateRarityUI();
+        UpdateStreakUI();
+        UpdateWpmUI();
         PlayerPromotion();
     }
     
@@ -113,8 +145,84 @@ public class UIManager : MonoBehaviour
 
     public void UpdateCurrencyUI()
     {
-        currencyTextUI.text = $"${currencySystem.Money.ToString()}";
-        currencyTextUI2.text = $"${currencySystem.Money.ToString()}"; //PlaceHolder For now, cant solve sorting layer issue.
+        int money = currencySystem.Money;
+        currencyTextUI.text = $"${money}";
+        currencyTextUI2.text = $"${money}"; //PlaceHolder For now, cant solve sorting layer issue.
+
+        if (!currencyUIReady)
+        {
+            lastMoneyDisplayed = money;
+            currencyUIReady = true;
+            return;
+        }
+
+        if (money != lastMoneyDisplayed)
+        {
+            lastMoneyDisplayed = money;
+            PlayCurrencyChangeFeedback();
+        }
+    }
+
+    void PlayCurrencyChangeFeedback()
+    {
+        AnimateCurrencyText(currencyTextUI);
+        AnimateCurrencyText(currencyTextUI2);
+    }
+
+    void AnimateCurrencyText(TextMeshProUGUI tmp)
+    {
+        if (tmp == null) return;
+
+        RectTransform rt = tmp.rectTransform;
+        rt.DOKill();
+        rt.localScale = Vector3.one;
+        rt.localRotation = Quaternion.identity;
+
+        rt.DOPunchScale(Vector3.one * bumpStrength, bumpDuration, bumpVibrato, bumpElasticity);
+        rt.DOPunchRotation(new Vector3(0f, 0f, rotateStrength), rotateDuration, rotateVibrato, rotateElasticity);
+        rt.DOShakeAnchorPos(shakeDuration, shakeStrength, shakeVibrato, shakeRandomness, false, true);
+    }
+
+    public void UpdateStreakUI()
+    {
+        if (streakTextUI == null || rewardsSystem == null) return;
+
+        float streak = rewardsSystem.streakMultiplier;
+        streakTextUI.text = $"{streak:0.00}x";
+
+        if (Mathf.Approximately(streak, lastStreakDisplayed))
+            return;
+
+        lastStreakDisplayed = streak;
+
+        float targetScale = Mathf.Clamp(streak, streakMinScale, streakMaxScale);
+        RectTransform rt = streakTextUI.rectTransform;
+        rt.DOKill(false);
+
+        Tween scaleTween = rt
+            .DOScale(Vector3.one * targetScale, streakScaleTweenDuration)
+            .SetEase(Ease.OutBack);
+
+        if (streak >= streakPulseThreshold)
+        {
+            scaleTween.OnComplete(() => StartStreakPulse(rt, targetScale));
+        }
+    }
+
+    void StartStreakPulse(RectTransform rt, float baseScale)
+    {
+        if (rt == null) return;
+
+        float inwardScale = baseScale * (1f - streakPulseAmount);
+        rt.DOScale(Vector3.one * inwardScale, streakPulseDuration)
+            .SetEase(Ease.InOutSine)
+            .SetLoops(-1, LoopType.Yoyo);
+    }
+
+    public void UpdateWpmUI()
+    {
+        if (wpmTextUI == null || typingController == null) return;
+        wpmTextUI.text = $"{Mathf.RoundToInt(typingController.currentWPM)} WPM";
     }
 
     public void UpdateRarityUI()

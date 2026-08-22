@@ -16,6 +16,8 @@ public class RandomSpawner : MonoBehaviour
     [SerializeField] private float maxForce = 7f;
     [SerializeField] private float horizontalForce = 2f;
 
+    [SerializeField] private float returnDelay = 2f;
+
     private Queue<GameObject> pool = new Queue<GameObject>();
 
     private void Awake()
@@ -25,10 +27,7 @@ public class RandomSpawner : MonoBehaviour
             CreateObject();
         }
     }
-    private void Start()
-    {
-        InvokeRepeating(nameof(Spawn), 0f, 1f);
-    }
+
     private GameObject CreateObject()
     {
         GameObject obj = Instantiate(prefab);
@@ -37,20 +36,20 @@ public class RandomSpawner : MonoBehaviour
         return obj;
     }
 
-    public void Spawn()
+    public void Spawn(int amount)
     {
         if (pool.Count == 0)
             CreateObject();
 
         GameObject obj = pool.Dequeue();
 
-        // Random position inside rectangle
         float x = Random.Range(-spawnWidth / 2f, spawnWidth / 2f);
         float y = Random.Range(-spawnHeight / 2f, spawnHeight / 2f);
 
         obj.transform.position = transform.position + new Vector3(x, y, 0f);
         obj.transform.rotation = Quaternion.identity;
 
+        obj.GetComponent<FloatingTextPopUp>().SetText($"+{amount}");
         obj.SetActive(true);
 
         Rigidbody2D rb = obj.GetComponent<Rigidbody2D>();
@@ -66,7 +65,7 @@ public class RandomSpawner : MonoBehaviour
             ForceMode2D.Impulse
         );
 
-        StartCoroutine(ReturnToPool(obj, 2f));
+        StartCoroutine(ReturnToPool(obj, returnDelay));
     }
 
     private System.Collections.IEnumerator ReturnToPool(GameObject obj, float delay)
@@ -82,7 +81,7 @@ public class RandomSpawner : MonoBehaviour
         Gizmos.color = new Color(1f, 0.2f, 0.7f);
         Gizmos.DrawWireCube(
             transform.position,
-            new Vector3(spawnWidth, spawnHeight, 0f)    
+            new Vector3(spawnWidth, spawnHeight, 0f)
         );
     }
 }

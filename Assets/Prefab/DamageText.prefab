@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7467844465331967764}
   - component: {fileID: 7454867314362703035}
   - component: {fileID: 6339319633408861762}
+  - component: {fileID: 7354727379661449348}
   m_Layer: 5
   m_Name: DamageText
   m_TagString: Untagged
@@ -120,6 +121,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &7354727379661449348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1733268506615040556}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abbc739f3cdb0c44688a569488f99b2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FloatingTextPopUp
+  text: {fileID: 858146366943686500}
 --- !u!1 &6725644270147690817
 GameObject:
   m_ObjectHideFlags: 0
